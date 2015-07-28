@@ -11,6 +11,8 @@ import com.esri.core.symbol.PictureMarkerSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.map.*;
 import com.esri.runtime.ArcGISRuntime;
+import com.twizted.Journey;
+import com.twizted.TripSection;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -34,13 +36,16 @@ public class MapFrame extends JFrame
     private com.esri.core.geometry.Point point;
     private SimpleLineSymbol simpleLineSymbol;
     private Polyline polyline;
-    private SpatialReference sr, mySpat;
+    private SpatialReference mySpat;
     private SimpleRenderer simpleRenderer = new SimpleRenderer(new SimpleLineSymbol(new Color(0, 100, 250), 3));
     private final int TRANSPARENCY = 20; // 0 is opaque, 100 is transparent
     private final String FSP = System.getProperty("file.separator");
+    private Journey journey;
+    private JButton beginButton;
 
     public MapFrame() throws IOException
     {
+        journey = new Journey();
         mySpat = SpatialReference.create(SpatialReference.WKID_WGS84);
         final Image pointerImage = ImageIO.read(new File("red_dot.png"));
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -61,6 +66,23 @@ public class MapFrame extends JFrame
         JPanel panel = (JPanel) this.getContentPane();
         panel.setPreferredSize(new Dimension(800, 600));
 
+
+
+
+        beginButton = new JButton("Begin simulation");
+        beginButton.setBounds(330, 550, 140, 30);
+        beginButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                System.out.println("HAI LOLS");
+                // Check that there is at least one trip section in the journey and then
+                // pass the journey object to the simulation.
+            }
+        });
+        panel.add(beginButton);
+
         MapOptions mapOptions = new MapOptions(MapOptions.MapType.TOPO);
         MapOverlay overlay = new MyOverlay();
         map = new JMap(mapOptions);
@@ -70,7 +92,6 @@ public class MapFrame extends JFrame
         panel.add(map);
 
         map.setExtent(new Envelope(192627.89248559574, 6883772.075054788, 199142.69342394127, 6888658.175758547));
-        sr = map.getSpatialReference();
 
         final GraphicsLayer graphicsLayer = new GraphicsLayer();
         map.getLayers().add(graphicsLayer);
@@ -150,10 +171,7 @@ public class MapFrame extends JFrame
             @Override
             public void mapExtentChanged(MapEvent arg0)
             {
-                if (map.isReady())
-                {
-
-                }
+                super.mapExtentChanged(arg0);
             }
 
             @Override
@@ -166,8 +184,6 @@ public class MapFrame extends JFrame
 
                 lineID = graphicsLayer.addGraphic(lineGraphic);
                 pointerID = graphicsLayer.addGraphic(pointGraphic);
-
-                System.out.println(event.getMap().getExtent().getCenter());
             }
 
 
@@ -209,12 +225,13 @@ public class MapFrame extends JFrame
                 switch (e.getKeyCode())
                 {
                     case KeyEvent.VK_C:
-                        System.out.println("Clearing");
+                        System.out.println("Clearing all points.");
                         firstUpdate = true;
+                        journey.clear();
                         polyline.setEmpty();
                         break;
                     case KeyEvent.VK_ESCAPE:
-
+                        System.out.println("User requested exit.");
                         polyline.setEmpty();
                         map.dispose();
                         System.exit(0);
@@ -268,38 +285,42 @@ public class MapFrame extends JFrame
 
     private class MyOverlay extends MapOverlay
     {
+        double startLat = 0, startLong = 0, endLat, endLong;
         @Override
         public void onMouseClicked(MouseEvent event)
         {
-            point = map.toMapPoint(event.getX(), event.getY());
-            if (firstUpdate)
-            {
-                polyline.setEmpty();
-                polyline.startPath(point);
-                firstUpdate = false;
-            } else
-            {
 
-                //point = GeometryEngine.project(currentLat, currentLong, map.getSpatialReference());
-                polyline.lineTo(point);
+            if (event.getButton() == MouseEvent.BUTTON3)
+            {
+                point = map.toMapPoint(event.getX(), event.getY());
+                Point p1 = (Point) GeometryEngine.project(point, map.getSpatialReference(), mySpat);
+
+                if (firstUpdate)
+                {
+                    polyline.setEmpty();
+                    polyline.startPath(point);
+                    firstUpdate = false;
+                    startLat = p1.getY();
+                    startLong = p1.getX();
+                } else
+                {
+                    polyline.lineTo(point);
+                    endLat = p1.getY();
+                    endLong = p1.getX();
+
+                    //JOptionPane shown here and then results fed to list....?
+                    TripSection t = new TripSection(startLat, endLat, startLong, endLong, 0, null);
+                    journey.add(t);
+                    startLat = endLat;
+                    startLong = endLong;
+                }
             }
-
-            Point p1 = (Point) GeometryEngine.project(point, map.getSpatialReference(), mySpat);
-
-            System.out.println(p1.getX() + " " + p1.getY());
         }
 
         @Override
         public void onMouseDragged(MouseEvent event)
         {
-            if (mouseThree)
-            {
-                point = map.toMapPoint(event.getX(), event.getY());
-                polyline.lineTo(point);
-            }else
-            {
-                super.onMouseDragged(event);
-            }
+            super.onMouseDragged(event);
         }
 
         @Override
