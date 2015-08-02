@@ -12,7 +12,9 @@ import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.map.*;
 import com.esri.runtime.ArcGISRuntime;
 import com.twizted.Journey;
+import com.twizted.Simulation;
 import com.twizted.TripSection;
+import com.twizted.Weather;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -42,10 +44,14 @@ public class MapFrame extends JFrame
     private final String FSP = System.getProperty("file.separator");
     private Journey journey;
     private JButton beginButton;
+    private InputPanel ip;
+    private Simulation simulation;
 
     public MapFrame() throws IOException
     {
         journey = new Journey();
+        ip = new InputPanel();
+
         mySpat = SpatialReference.create(SpatialReference.WKID_WGS84);
         final Image pointerImage = ImageIO.read(new File("red_dot.png"));
         this.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -59,16 +65,14 @@ public class MapFrame extends JFrame
             }
         });
         this.setTitle("Vessel Location");
-        this.setLocation(1020, 0);
+        this.setLocation(150, 0);
 
         polyline = new Polyline();
 
         JPanel panel = (JPanel) this.getContentPane();
         panel.setPreferredSize(new Dimension(800, 600));
 
-
-
-
+        // This button will start the sim.
         beginButton = new JButton("Begin simulation");
         beginButton.setBounds(330, 550, 140, 30);
         beginButton.addActionListener(new ActionListener()
@@ -76,9 +80,14 @@ public class MapFrame extends JFrame
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                System.out.println("HAI LOLS");
-                // Check that there is at least one trip section in the journey and then
-                // pass the journey object to the simulation.
+                if (journey.getSize() >= 1)
+                {
+                    simulation = new Simulation(journey);
+                    simulation.runSim();
+                }else
+                {
+                    System.out.println("TOO SMALL BRO");
+                }
             }
         });
         panel.add(beginButton);
@@ -106,8 +115,9 @@ public class MapFrame extends JFrame
         // get dynamic workspaces from service
         WorkspaceInfoSet workspaceInfoSet = localMapService.getDynamicWorkspaces();
 
+        //C:\Users\Twiz\Dropbox\Java Projects\VisualBoatSim
         WorkspaceInfo workspaceInfo = WorkspaceInfo.CreateShapefileFolderConnection(
-                "WORKSPACE", "C:\\Users\\Twiz\\Dropbox\\Java Projects\\VisualBoatSim");
+                "WORKSPACE", "G:\\Ten_Files\\Dropbox\\Java Projects\\VisualBoatSim");
 
         // set dynamic workspaces for our local map service
         workspaceInfoSet.add(workspaceInfo);
@@ -224,6 +234,17 @@ public class MapFrame extends JFrame
             {
                 switch (e.getKeyCode())
                 {
+                    case KeyEvent.VK_BACK_SPACE:
+                        System.out.println(polyline.getPathCount());
+                        if (polyline.getPointCount() > 0)
+                        {
+                            polyline.removePoint(polyline.getPointCount() - 1);
+                        }else if (polyline.getPointCount() == 0)
+                        {
+                            polyline.setEmpty();
+                            firstUpdate = true;
+                        }
+                        break;
                     case KeyEvent.VK_C:
                         System.out.println("Clearing all points.");
                         firstUpdate = true;
@@ -300,19 +321,40 @@ public class MapFrame extends JFrame
                     polyline.setEmpty();
                     polyline.startPath(point);
                     firstUpdate = false;
-                    startLat = p1.getY();
-                    startLong = p1.getX();
+                    startLat = p1.getX();
+                    startLong = p1.getY();
                 } else
                 {
                     polyline.lineTo(point);
-                    endLat = p1.getY();
-                    endLong = p1.getX();
+                    endLat = p1.getX();
+                    endLong = p1.getY();
 
-                    //JOptionPane shown here and then results fed to list....?
-                    TripSection t = new TripSection(startLat, endLat, startLong, endLong, 0, null);
-                    journey.add(t);
-                    startLat = endLat;
-                    startLong = endLong;
+                    int option = JOptionPane.showConfirmDialog(null,
+                            ip,
+                            "Journey section details",
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.PLAIN_MESSAGE);
+
+                    if(option == JOptionPane.OK_OPTION)
+                    {
+                        /*
+                         * Sure this part is annoying but picture the user
+                         * dragging out the route and then these details
+                         * are fetched automatically.
+                         */
+                        Weather sectionWeather = new Weather( ip.getWinMag(), ip.getWinDir(), ip.getWavMag(), ip.getWavDir(), ip.getWavPeriod());
+                        TripSection t = new TripSection(startLat, startLong, endLat, endLong, ip.getSpeedLimit(), sectionWeather);
+                        journey.add(t);
+                        startLat = endLat;
+                        startLong = endLong;
+                    }else
+                    {
+                        if (polyline.getPointCount() > 0)
+                        {
+                            polyline.removePoint(polyline.getPointCount() - 1);
+                        }
+                        System.out.println("CANCELED");
+                    }
                 }
             }
         }

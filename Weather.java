@@ -8,11 +8,10 @@ public class Weather
     private Wind wind;
     private Waves waves;
 
-    public Weather(double windBearing, double windMagnitude,
-                   double waveHeight, double wavePeriod, double waveBearing)
+    public Weather(double windMagnitude, double windBearing, double waveHeight, double waveBearing, double wavePeriod)
     {
-        this.wind = new Wind(windBearing, windMagnitude);
-        this.waves = new Waves(waveHeight, wavePeriod, waveBearing);
+        this.wind = new Wind(windMagnitude, windBearing);
+        this.waves = new Waves(waveHeight, waveBearing, wavePeriod);
     }
 
     public Wind getWind()
@@ -39,10 +38,10 @@ public class Weather
     {
         private double bearing, magnitude;
 
-        public Wind(double bearing, double magnitude)
+        public Wind(double magnitude, double bearing)
         {
-            this.bearing = bearing;
             this.magnitude = magnitude;
+            this.bearing = bearing;
         }
 
         public double getBearing()
@@ -75,11 +74,11 @@ public class Weather
         Wave bearing decides if the effects are negative or positive.
          */
 
-        public Waves(double height, double period, double bearing)
+        public Waves(double height, double bearing, double period)
         {
             this.height = height;
-            this.period = period;
             this.bearing = bearing;
+            this.period = period;
         }
 
         public double getHeight()

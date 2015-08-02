@@ -1,92 +1,211 @@
 package com.twizted.Frames;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 
 /**
- * Created by Cypher on 27/07/2015.
+ * @author Ian Weeks (29/7/15)
  */
 public class InputPanel extends JPanel
 {
-    private JLabel speedLabel, speedLimitLabel, waveLabel, wavMagLabel,
-            wavDirLabel, windLabel, winMagLabel, winDirLabel, wavPeriodLabel;
-    private JTextField speedLimitField, wavMagField, wavDirField, winMagField, winDirField, wavPeriodField;
-    private Border speedBorder, windBorder, waveBorder;
+    private JSlider speedLimit, wavMag, wavDir, winMag, winDir, wavPeriod;
 
     public InputPanel()
     {
-        this.setPreferredSize(new Dimension(250, 240));
+        this.setPreferredSize(new Dimension(650, 340));
         this.setLayout(null);
 
-        speedLabel = new JLabel("Speed Information");
+        JLabel speedLabel = new JLabel("Speed Information");
         speedLabel.setBounds(5, 5, 140, 15);
         this.add(speedLabel);
 
-        speedLimitLabel = new JLabel("Area limit:");
-        speedLimitLabel.setBounds(45, 30, 140, 15);
+        JLabel speedLimitLabel = new JLabel("Area limit:");
+        speedLimitLabel.setBounds(30, 30, 140, 15);
+        speedLimitLabel.setToolTipText("The speed limit in knots for vessels in this area.");
         this.add(speedLimitLabel);
 
-        speedLimitField = new JTextField();
-        speedLimitField.setBounds(170, 28, 60, 20);
-        this.add(speedLimitField);
+        speedLimit = new JSlider(JSlider.VERTICAL, 1, 31, 1);
+        speedLimit.setBounds(30, 50, 50, 250);
+        speedLimit.setMajorTickSpacing(5);
+        speedLimit.setPaintLabels(true);
+        speedLimit.setPaintTicks(true);
+        speedLimit.addChangeListener(new ChangeListener()
+        {
+            public void stateChanged(ChangeEvent ce)
+            {
+                JSlider slider = (JSlider) ce.getSource();
+                if (!slider.getValueIsAdjusting())
+                {
+                    slider.setToolTipText(String.valueOf(speedLimit.getValue()));
+                }
+            }
+        });
+        this.add(speedLimit);
 
-        windLabel = new JLabel("Wind Information");
-        windLabel.setBounds(5, 63, 140, 15);
+        JLabel windLabel = new JLabel("Wind Information");
+        windLabel.setBounds(190, 5, 140, 15);
         this.add(windLabel);
 
-        winMagLabel = new JLabel("Magnitude:");
-        winMagLabel.setBounds(45, 88, 100, 15);
+        JLabel winMagLabel = new JLabel("Speed:");
+        winMagLabel.setBounds(155, 30, 100, 15);
         this.add(winMagLabel);
 
-        winMagField = new JTextField();
-        winMagField.setBounds(170, 86, 60, 20);
-        this.add(winMagField);
+        winMag = new JSlider(JSlider.VERTICAL, 0, 30, 0);
+        winMag.setBounds(155, 50, 50, 250);
+        winMag.setMinorTickSpacing(1);
+        winMag.setMajorTickSpacing(5);
+        winMag.setPaintLabels(true);
+        winMag.setPaintTicks(true);
+        winMag.addChangeListener(new ChangeListener()
+        {
+            public void stateChanged(ChangeEvent ce)
+            {
+                JSlider slider = (JSlider) ce.getSource();
+                if (!slider.getValueIsAdjusting())
+                {
+                    slider.setToolTipText(String.valueOf(winMag.getValue()));
+                }
+            }
+        });
+        this.add(winMag);
 
-        winDirLabel = new JLabel("Bearing:");
-        winDirLabel.setBounds(45, 113, 100, 15);
+
+        JLabel winDirLabel = new JLabel("Bearing:");
+        winDirLabel.setBounds(265, 30, 100, 15);
         this.add(winDirLabel);
 
-        winDirField = new JTextField();
-        winDirField.setBounds(170, 111, 60, 20);
-        this.add(winDirField);
+        winDir = new JSlider(JSlider.VERTICAL, 0, 360, 1);
+        winDir.setBounds(265, 50, 50, 250);
+        winDir.setMinorTickSpacing(45);
+        winDir.setMajorTickSpacing(90);
+        winDir.setPaintLabels(true);
+        winDir.setPaintTicks(true);
+        winDir.addChangeListener(new ChangeListener()
+        {
+            public void stateChanged(ChangeEvent ce)
+            {
+                JSlider slider = (JSlider) ce.getSource();
+                if (!slider.getValueIsAdjusting())
+                {
+                    slider.setToolTipText(String.valueOf(winDir.getValue()));
+                }
+            }
+        });
+        this.add(winDir);
 
-        waveLabel = new JLabel("Wave Information");
-        waveLabel.setBounds(5, 142, 140, 15);
+        JLabel waveLabel = new JLabel("Wave Information");
+        waveLabel.setBounds(460, 5, 140, 15);
         this.add(waveLabel);
 
-        wavMagLabel = new JLabel("Magnitude:");
-        wavMagLabel.setBounds(45, 167, 100, 15);
+        JLabel wavMagLabel = new JLabel("Height:");
+        wavMagLabel.setBounds(385, 30, 100, 15);
         this.add(wavMagLabel);
 
-        wavMagField = new JTextField();
-        wavMagField.setBounds(170, 165, 60, 20);
-        this.add(wavMagField);
+        wavMag = new JSlider(JSlider.VERTICAL, 0, 5, 0);
+        wavMag.setBounds(385, 50, 50, 250);
+        //wavMag.setMinorTickSpacing(1);
+        wavMag.setMajorTickSpacing(1);
+        wavMag.setPaintLabels(true);
+        wavMag.setPaintTicks(true);
+        wavMag.addChangeListener(new ChangeListener()
+        {
+            public void stateChanged(ChangeEvent ce)
+            {
+                JSlider slider = (JSlider) ce.getSource();
+                if (!slider.getValueIsAdjusting())
+                {
+                    slider.setToolTipText(String.valueOf(wavMag.getValue()));
+                }
+            }
+        });
+        this.add(wavMag);
 
-        wavDirLabel = new JLabel("Bearing:");
-        wavDirLabel.setBounds(45, 192, 100, 15);
+
+        JLabel wavDirLabel = new JLabel("Bearing:");
+        wavDirLabel.setBounds(490, 30, 100, 15);
         this.add(wavDirLabel);
 
-        wavDirField = new JTextField();
-        wavDirField.setBounds(170, 190, 60, 20);
-        this.add(wavDirField);
+        wavDir = new JSlider(JSlider.VERTICAL, 0, 360, 0);
+        wavDir.setBounds(490, 50, 50, 250);
+        wavDir.setMinorTickSpacing(45);
+        wavDir.setMajorTickSpacing(90);
+        wavDir.setPaintLabels(true);
+        wavDir.setPaintTicks(true);
+        wavDir.addChangeListener(new ChangeListener()
+        {
+            public void stateChanged(ChangeEvent ce)
+            {
+                JSlider slider = (JSlider) ce.getSource();
+                if (!slider.getValueIsAdjusting())
+                {
+                    slider.setToolTipText(String.valueOf(wavDir.getValue()));
+                }
+            }
+        });
+        this.add(wavDir);
 
-        wavPeriodLabel = new JLabel("Period:");
-        wavPeriodLabel.setBounds(45, 217, 100, 15);
+        JLabel wavPeriodLabel = new JLabel("Period:");
+        wavPeriodLabel.setBounds(590, 30, 100, 15);
         this.add(wavPeriodLabel);
 
-        wavPeriodField = new JTextField();
-        wavPeriodField.setBounds(170, 215, 60, 20);
-        this.add(wavPeriodField);
+        wavPeriod = new JSlider(JSlider.VERTICAL, 5, 60, 5);
+        wavPeriod.setBounds(590, 50, 50, 250);
+        wavPeriod.setMinorTickSpacing(1);
+        wavPeriod.setMajorTickSpacing(5);
+        wavPeriod.setPaintLabels(true);
+        wavPeriod.setPaintTicks(true);
+        wavPeriod.addChangeListener(new ChangeListener()
+        {
+            public void stateChanged(ChangeEvent ce)
+            {
+                JSlider slider = (JSlider) ce.getSource();
+                if (!slider.getValueIsAdjusting())
+                {
+                    slider.setToolTipText(String.valueOf(wavPeriod.getValue()));
+                }
+            }
+        });
+        this.add(wavPeriod);
     }
 
     @Override
     protected void paintComponent(Graphics g)
     {
         g.setColor(Color.BLACK);
-        g.drawRect(3, 3, 235, 53);
-        g.drawRect(3, 61, 235, 73);
-        g.drawRect(3, 140, 235, 99);
+        g.drawRect(0, 0, 115, 330);
+        g.drawRect(120, 0, 235, 330);
+        g.drawRect(360, 0, 288, 330);
+    }
+
+    public double getSpeedLimit()
+    {
+        return speedLimit.getModel().getValue();
+    }
+
+    public double getWavMag()
+    {
+        return wavMag.getModel().getValue();
+    }
+
+    public double getWavDir()
+    {
+        return wavDir.getModel().getValue();
+    }
+
+    public double getWinMag()
+    {
+        return winMag.getModel().getValue();
+    }
+
+    public double getWinDir()
+    {
+        return winDir.getModel().getValue();
+    }
+
+    public double getWavPeriod()
+    {
+        return wavPeriod.getModel().getValue();
     }
 }
