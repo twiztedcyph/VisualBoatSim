@@ -1,24 +1,45 @@
 package com.twizted.Vessels;
 
 /**
- * Created by Cypher on 02/08/2015.
+ * @author Ian Weeks
  */
 public class DartFisher extends Vessel
 {
-    @Override
-    double getMCR(double speed)
+    public DartFisher(double maxSafeWaveHeight, double maxCargoWeight, int maxPAX)
     {
-        return Math.exp(0.19721092 * speed);
+        super(maxSafeWaveHeight, maxCargoWeight, maxPAX);
     }
 
     @Override
-    double getRPM(double MCR)
+    public double getRPM(double speed)
     {
-        return 12 * MCR + 800;
+        double mcr;
+
+        if (speed <= 19.97239323)
+        {
+            mcr = speed;
+        }else if (speed <= 24.59356989)
+        {
+            mcr = 4.33 * speed - 66.4;
+        }else if (speed <= 27.29678495)
+        {
+            mcr = 7.4 * speed - 142;
+        }else if (speed <= 29.21474655)
+        {
+            mcr = 10.4 * speed - 225;
+        }else if (speed <= 30)
+        {
+            mcr = 12.7 * speed - 292;
+        }else
+        {
+            mcr = 14.2 * speed - 337;
+        }
+
+        return 13 * mcr + 800;
     }
 
     @Override
-    double getFPH(double RPM)
+    public double getFPH(double RPM)
     {
         if (RPM < 1000)
         {

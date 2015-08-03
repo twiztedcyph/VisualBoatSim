@@ -1,15 +1,36 @@
 package com.twizted.Vessels;
 
 /**
- * Created by Cypher on 02/08/2015.
+ * @author Ian Weeks.
  */
 public abstract class Vessel
 {
-    private double maxSafeWaveHeight;
+    private double maxSafeWaveHeight, maxCargoWeight;
+    private int maxPAX;
 
-    abstract double getMCR(double speed);
+    public Vessel(double maxSafeWaveHeight, double maxCargoWeight, int maxPAX)
+    {
+        this.maxSafeWaveHeight = maxSafeWaveHeight;
+        this.maxCargoWeight = maxCargoWeight;
+        this.maxPAX = maxPAX;
+    }
 
-    abstract double getRPM(double MCR);
+    public abstract double getRPM(double speed);
 
-    abstract double getFPH(double RPM);
+    public abstract double getFPH(double RPM);
+
+    public double getMaxSafeWaveHeight()
+    {
+        return maxSafeWaveHeight;
+    }
+
+    public double getMaxCargoWeight()
+    {
+        return maxCargoWeight;
+    }
+
+    public int getMaxPAX()
+    {
+        return maxPAX;
+    }
 }

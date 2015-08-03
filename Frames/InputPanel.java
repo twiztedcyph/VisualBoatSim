@@ -3,6 +3,7 @@ package com.twizted.Frames;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.plaf.ComponentUI;
 import java.awt.*;
 
 /**
@@ -12,6 +13,10 @@ public class InputPanel extends JPanel
 {
     private JSlider speedLimit, wavMag, wavDir, winMag, winDir, wavPeriod;
 
+    /**
+     * InputPanel constructor.
+     * Speed and weather input panel for each trip section.
+     */
     public InputPanel()
     {
         this.setPreferredSize(new Dimension(650, 340));
@@ -170,40 +175,99 @@ public class InputPanel extends JPanel
         this.add(wavPeriod);
     }
 
+    /**
+     * Calls the UI delegate's paint method, if the UI delegate
+     * is non-<code>null</code>.  We pass the delegate a copy of the
+     * <code>Graphics</code> object to protect the rest of the
+     * paint code from irrevocable changes
+     * (for example, <code>Graphics.translate</code>).
+     * <p>
+     * If you override this in a subclass you should not make permanent
+     * changes to the passed in <code>Graphics</code>. For example, you
+     * should not alter the clip <code>Rectangle</code> or modify the
+     * transform. If you need to do these operations you may find it
+     * easier to create a new <code>Graphics</code> from the passed in
+     * <code>Graphics</code> and manipulate it. Further, if you do not
+     * invoker super's implementation you must honor the opaque property,
+     * that is
+     * if this component is opaque, you must completely fill in the background
+     * in a non-opaque color. If you do not honor the opaque property you
+     * will likely see visual artifacts.
+     * <p>
+     * The passed in <code>Graphics</code> object might
+     * have a transform other than the identify transform
+     * installed on it.  In this case, you might get
+     * unexpected results if you cumulatively apply
+     * another transform.
+     *
+     * @param g the <code>Graphics</code> object to protect
+     * @see #paint
+     * @see ComponentUI
+     */
     @Override
     protected void paintComponent(Graphics g)
     {
+        //Black borders for each section.
         g.setColor(Color.BLACK);
         g.drawRect(0, 0, 115, 330);
         g.drawRect(120, 0, 235, 330);
         g.drawRect(360, 0, 288, 330);
     }
 
+    /**
+     * Get the inputted speed limit value.
+     *
+     * @return The inputted speed limit value.
+     */
     public double getSpeedLimit()
     {
         return speedLimit.getModel().getValue();
     }
 
+    /**
+     * Get the inputted wave height value.
+     *
+     * @return The inputted wave height value.
+     */
     public double getWavMag()
     {
         return wavMag.getModel().getValue();
     }
 
+    /**
+     * Get the inputted wave direction value.
+     *
+     * @return The inputted wave direction value.
+     */
     public double getWavDir()
     {
         return wavDir.getModel().getValue();
     }
 
+    /**
+     * Get the inputted wind magnitude value.
+     *
+     * @return The inputted wind magnitude value.
+     */
     public double getWinMag()
     {
         return winMag.getModel().getValue();
     }
 
+    /**
+     * Get the inputted wind direction value.
+     *
+     * @return The inputted wind direction value
+     */
     public double getWinDir()
     {
         return winDir.getModel().getValue();
     }
 
+    /**
+     * The inputted wave period value.
+     * @return The inputted wave period value.
+     */
     public double getWavPeriod()
     {
         return wavPeriod.getModel().getValue();

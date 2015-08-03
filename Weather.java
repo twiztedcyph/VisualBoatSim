@@ -19,19 +19,9 @@ public class Weather
         return wind;
     }
 
-    public void setWind(Wind wind)
-    {
-        this.wind = wind;
-    }
-
     public Waves getWaves()
     {
         return waves;
-    }
-
-    public void setWaves(Waves waves)
-    {
-        this.waves = waves;
     }
 
     protected class Wind
@@ -49,19 +39,9 @@ public class Weather
             return bearing;
         }
 
-        public void setBearing(double bearing)
-        {
-            this.bearing = bearing;
-        }
-
         public double getMagnitude()
         {
             return magnitude;
-        }
-
-        public void setMagnitude(double magnitude)
-        {
-            this.magnitude = magnitude;
         }
     }
 
@@ -86,19 +66,9 @@ public class Weather
             return height;
         }
 
-        public void setHeight(double height)
-        {
-            this.height = height;
-        }
-
         public double getPeriod()
         {
             return period;
-        }
-
-        public void setPeriod(double period)
-        {
-            this.period = period;
         }
 
         public double getBearing()
@@ -106,9 +76,5 @@ public class Weather
             return bearing;
         }
 
-        public void setBearing(double bearing)
-        {
-            this.bearing = bearing;
-        }
     }
 }

@@ -14,6 +14,10 @@ import com.esri.runtime.ArcGISRuntime;
 import com.twizted.Journey;
 import com.twizted.Simulation;
 import com.twizted.TripSection;
+import com.twizted.Vessels.DartFisher;
+import com.twizted.Vessels.LargerVessel;
+import com.twizted.Vessels.SmallerVessel;
+import com.twizted.Vessels.Vessel;
 import com.twizted.Weather;
 
 import javax.imageio.ImageIO;
@@ -23,6 +27,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  *
@@ -46,11 +51,17 @@ public class MapFrame extends JFrame
     private JButton beginButton;
     private InputPanel ip;
     private Simulation simulation;
+    private ArrayList<Vessel> vesselList;
 
     public MapFrame() throws IOException
     {
         journey = new Journey();
         ip = new InputPanel();
+        vesselList = new ArrayList<Vessel>();
+
+        final DartFisher dartFisher = new DartFisher(2, 30000, 12);
+        final SmallerVessel smallerVessel = new SmallerVessel(1, 5000, 3);
+        final LargerVessel largerVessel = new LargerVessel(4, 50000, 25);
 
         mySpat = SpatialReference.create(SpatialReference.WKID_WGS84);
         final Image pointerImage = ImageIO.read(new File("red_dot.png"));
@@ -72,6 +83,61 @@ public class MapFrame extends JFrame
         JPanel panel = (JPanel) this.getContentPane();
         panel.setPreferredSize(new Dimension(800, 600));
 
+        JCheckBox smlVessel = new JCheckBox("Smaller Vessel");
+        smlVessel.addItemListener(new ItemListener()
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e)
+            {
+                if (e.getStateChange() == ItemEvent.SELECTED)
+                {
+                    vesselList.add(smallerVessel);
+                }else if(e.getStateChange() == ItemEvent.DESELECTED)
+                {
+                    vesselList.remove(smallerVessel);
+                }
+            }
+        });
+        smlVessel.setBounds(5, 5, 120, 20);
+        this.add(smlVessel);
+
+        JCheckBox darVessel = new JCheckBox("Dart Fisher");
+        darVessel.addItemListener(new ItemListener()
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e)
+            {
+                if (e.getStateChange() == ItemEvent.SELECTED)
+                {
+                    vesselList.add(dartFisher);
+                }
+                else if (e.getStateChange() == ItemEvent.DESELECTED)
+                {
+                    vesselList.remove(dartFisher);
+                }
+            }
+        });
+        darVessel.setBounds(5, 30, 120, 20);
+        this.add(darVessel);
+
+        JCheckBox lrgVessel = new JCheckBox("Larger Vessel");
+        lrgVessel.addItemListener(new ItemListener()
+        {
+            @Override
+            public void itemStateChanged(ItemEvent e)
+            {
+                if (e.getStateChange() == ItemEvent.SELECTED)
+                {
+                    vesselList.add(largerVessel);
+                }else if(e.getStateChange() == ItemEvent.DESELECTED)
+                {
+                    vesselList.remove(largerVessel);
+                }
+            }
+        });
+        lrgVessel.setBounds(5, 55, 120, 20);
+        this.add(lrgVessel);
+
         // This button will start the sim.
         beginButton = new JButton("Begin simulation");
         beginButton.setBounds(330, 550, 140, 30);
@@ -80,9 +146,9 @@ public class MapFrame extends JFrame
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (journey.getSize() >= 1)
+                if (journey.getSize() >= 1 && vesselList.size() > 0)
                 {
-                    simulation = new Simulation(journey);
+                    simulation = new Simulation(journey, vesselList);
                     simulation.runSim();
                 }else
                 {
@@ -116,8 +182,9 @@ public class MapFrame extends JFrame
         WorkspaceInfoSet workspaceInfoSet = localMapService.getDynamicWorkspaces();
 
         //C:\Users\Twiz\Dropbox\Java Projects\VisualBoatSim
+        //G:\Ten_Files\Dropbox\Java Projects\VisualBoatSim
         WorkspaceInfo workspaceInfo = WorkspaceInfo.CreateShapefileFolderConnection(
-                "WORKSPACE", "G:\\Ten_Files\\Dropbox\\Java Projects\\VisualBoatSim");
+                "WORKSPACE", "C:\\Users\\Twiz\\Dropbox\\Java Projects\\VisualBoatSim");
 
         // set dynamic workspaces for our local map service
         workspaceInfoSet.add(workspaceInfo);
@@ -236,9 +303,10 @@ public class MapFrame extends JFrame
                 {
                     case KeyEvent.VK_BACK_SPACE:
                         System.out.println(polyline.getPathCount());
-                        if (polyline.getPointCount() > 0)
+                        if (polyline.getPointCount() > 0 && journey.getSize() > 0)
                         {
                             polyline.removePoint(polyline.getPointCount() - 1);
+                            journey.removeLast();
                         }else if (polyline.getPointCount() == 0)
                         {
                             polyline.setEmpty();
@@ -342,7 +410,12 @@ public class MapFrame extends JFrame
                          * dragging out the route and then these details
                          * are fetched automatically.
                          */
-                        Weather sectionWeather = new Weather( ip.getWinMag(), ip.getWinDir(), ip.getWavMag(), ip.getWavDir(), ip.getWavPeriod());
+                        Weather sectionWeather = new Weather(ip.getWinMag(),
+                                                             ip.getWinDir(),
+                                                             ip.getWavMag(),
+                                                             ip.getWavDir(),
+                                                             ip.getWavPeriod());
+
                         TripSection t = new TripSection(startLat, startLong, endLat, endLong, ip.getSpeedLimit(), sectionWeather);
                         journey.add(t);
                         startLat = endLat;

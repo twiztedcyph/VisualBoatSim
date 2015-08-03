@@ -11,9 +11,9 @@ public class OutputFrame extends JFrame
     private JTextArea textAreaOne, textAreaTwo;
     private JScrollPane scrollPane;
 
-    public OutputFrame()
+    public OutputFrame(String vesselName)
     {
-        this.setTitle("Simulation Results");
+        this.setTitle(vesselName + " Simulation Results");
         this.setLocation(980, 0);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 

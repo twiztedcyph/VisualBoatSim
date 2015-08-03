@@ -33,6 +33,11 @@ public class Journey implements Iterable<TripSection>
         tripSectionList.add(tripSection);
     }
 
+    public void removeLast()
+    {
+        tripSectionList.remove(tripSectionList.size() - 1);
+    }
+
     /**
      * Get the number of trip sections in this Journey.
      *

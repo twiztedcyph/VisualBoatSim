@@ -5,21 +5,60 @@ package com.twizted.Vessels;
  */
 public class LargerVessel extends Vessel
 {
-    @Override
-    public double getMCR(double speed)
+    public LargerVessel(double maxSafeWaveHeight, double maxCargoWeight, int maxPAX)
     {
-        return 0;
+        super(maxSafeWaveHeight, maxCargoWeight, maxPAX);
     }
 
     @Override
-    public double getRPM(double MCR)
+    public double getRPM(double speed)
     {
-        return 0;
+        double mcr;
+
+        if (speed <= 15)
+        {
+            mcr = 1.33 * speed;
+        }else if (speed <= 25)
+        {
+            mcr = 4 * speed - 40;
+        }else
+        {
+            mcr = 10 * speed - 190;
+        }
+
+        return 13 * mcr + 800;
     }
 
     @Override
     public double getFPH(double RPM)
     {
-        return 0;
+        if (RPM < 1000)
+        {
+            return 0.135 * RPM - 60;
+        }
+        else if (RPM < 1100)
+        {
+            return 0.350 * RPM - 275;
+        }
+        else if (RPM < 1300)
+        {
+            return 0.155 * RPM - 60.5;
+        }
+        else if (RPM < 1500)
+        {
+            return 0.0450 * RPM + 82.5;
+        }
+        else if (RPM < 1800)
+        {
+            return 0.0833 * RPM + 25;
+        }
+        else if (RPM < 1900)
+        {
+            return 0.140 * RPM - 77;
+        }
+        else
+        {
+            return 0.0367 * RPM + 119;
+        }
     }
 }
