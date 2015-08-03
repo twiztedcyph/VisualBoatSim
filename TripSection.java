@@ -2,7 +2,7 @@ package com.twizted;
 
 /**
  * This class defines a section of a Journey.
- * <p/>
+ * <p>
  * Created by Ian Weeks on 30/06/2015.
  */
 public class TripSection
@@ -18,6 +18,7 @@ public class TripSection
      * @param endLat    The destination latitude for this TripSection.
      * @param endLong   The destination longitude for this TripSection.
      * @param speed     The desired speed for this section of the journey.
+     * @param weather   The weather for this section of the journey.
      */
     public TripSection(double startLat, double startLong, double endLat, double endLong, double speed, Weather weather)
     {

@@ -1,15 +1,31 @@
 package com.twizted.Vessels;
 
 /**
+ * Dart Fisher vessel.
+ *
+ * @see Vessel
  * @author Ian Weeks
  */
 public class DartFisher extends Vessel
 {
+    /**
+     * Super Vessel constructor for Dart Fisher.
+     *
+     * @param maxSafeWaveHeight The maximum safe wave height this vessel can handle.
+     * @param maxCargoWeight The maximum cargo weight this vessel can handle.
+     * @param maxPAX The maximum number of PAX this vessel can handle.
+     */
     public DartFisher(double maxSafeWaveHeight, double maxCargoWeight, int maxPAX)
     {
         super(maxSafeWaveHeight, maxCargoWeight, maxPAX);
     }
 
+    /**
+     * Get this vessel's RPM from its speed.
+     *
+     * @param speed The speed of the vessel.
+     * @return The RPM of the vessel.
+     */
     @Override
     public double getRPM(double speed)
     {
@@ -38,6 +54,12 @@ public class DartFisher extends Vessel
         return 13 * mcr + 800;
     }
 
+    /**
+     * Get this vessel's fuel usage per hour from its RPM.
+     *
+     * @param RPM The vessel's RPM;
+     * @return The vessel's fuel usage per hour.
+     */
     @Override
     public double getFPH(double RPM)
     {
@@ -67,9 +89,6 @@ public class DartFisher extends Vessel
         }
         else
         {
-            //TODO Check with Amine that this is correct....
-            //This was the only one of Amines that didn't work so I replotted it...
-            //f(x) = (-0.0000513)*x^2 + (0.221)*x + (-27.2)
             return ((-0.0000513) * RPM * RPM) + (0.221 * RPM) - 27.2;
         }
     }

@@ -7,7 +7,11 @@ import javax.swing.plaf.ComponentUI;
 import java.awt.*;
 
 /**
- * @author Ian Weeks (29/7/15)
+ * Input panel.
+ *
+ * Speed and weather input panel for each trip section.
+ *
+ * @author Ian Weeks (29/07/2015)
  */
 public class InputPanel extends JPanel
 {
@@ -15,7 +19,6 @@ public class InputPanel extends JPanel
 
     /**
      * InputPanel constructor.
-     * Speed and weather input panel for each trip section.
      */
     public InputPanel()
     {

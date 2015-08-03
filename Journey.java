@@ -1,14 +1,13 @@
 package com.twizted;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 
 /**
  * Journey class holds a list of TripSections.
- * <p/>
+ * <p>
  * The class iterator will iterate over the each tripSection.
- * <p/>
+ * <p>
  * Created by Ian Weeks on 30/06/2015.
  */
 public class Journey implements Iterable<TripSection>
@@ -59,15 +58,10 @@ public class Journey implements Iterable<TripSection>
         return tripSectionList.iterator();
     }
 
-    /**
-     * Reverse the order of the TripSection list.
-     */
-    public void reverseOrder()
-    {
-        //TODO: This may not be required... Remove if that is the case.
-        Collections.reverse(tripSectionList);
-    }
 
+    /**
+     * Clear all TripSections from this journey.
+     */
     public void clear()
     {
         if (!tripSectionList.isEmpty())

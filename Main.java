@@ -1,15 +1,27 @@
 package com.twizted;
 
 import com.twizted.Frames.MapFrame;
-import com.twizted.Frames.OutputFrame;
 
 import javax.swing.*;
 import java.io.IOException;
 
+/**
+ * Main.
+ *
+ * Program start.
+ *
+ * @author Ian Weeks
+ */
 public class Main
 {
+    /**
+     * Main.
+     *
+     * @param args Command line arguments. **NOT USED**
+     */
     public static void main(String[] args)
     {
+        // Set the user directory for ArcGIS.
         System.setProperty("user.dir", "C:\\Program Files (x86)\\ArcGIS SDKs\\java10.2.4\\");
 
         SwingUtilities.invokeLater(new Runnable()
@@ -19,6 +31,7 @@ public class Main
             {
                 try
                 {
+                    // Init and start the program.
                     MapFrame mapFrame = new MapFrame();
                     mapFrame.setVisible(true);
                     mapFrame.startTimer();

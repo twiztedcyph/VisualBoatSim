@@ -30,7 +30,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
+ * MapFrame class.
  *
+ * ArcGIS Map used to input and display the route.
  *
  * @author Ian Weeks
  */
@@ -38,7 +40,7 @@ public class MapFrame extends JFrame
 {
     private JMap map;
     private int pointerID, lineID;
-    private boolean firstUpdate = true, mouseOne = false, mouseTwo = false, mouseThree = false;
+    private boolean firstUpdate = true;
     private Timer timer;
     private com.esri.core.geometry.Point point;
     private SimpleLineSymbol simpleLineSymbol;
@@ -48,17 +50,22 @@ public class MapFrame extends JFrame
     private final int TRANSPARENCY = 20; // 0 is opaque, 100 is transparent
     private final String FSP = System.getProperty("file.separator");
     private Journey journey;
-    private JButton beginButton;
     private InputPanel ip;
     private Simulation simulation;
     private ArrayList<Vessel> vesselList;
 
+    /**
+     * MapFrame constructor.
+     *
+     * @throws IOException If the image cannot be found or read.
+     */
     public MapFrame() throws IOException
     {
         journey = new Journey();
         ip = new InputPanel();
         vesselList = new ArrayList<Vessel>();
 
+        //Vessel setup.
         final DartFisher dartFisher = new DartFisher(2, 30000, 12);
         final SmallerVessel smallerVessel = new SmallerVessel(1, 5000, 3);
         final LargerVessel largerVessel = new LargerVessel(4, 50000, 25);
@@ -83,6 +90,7 @@ public class MapFrame extends JFrame
         JPanel panel = (JPanel) this.getContentPane();
         panel.setPreferredSize(new Dimension(800, 600));
 
+        //Vessel selection using check boxes.
         JCheckBox smlVessel = new JCheckBox("Smaller Vessel");
         smlVessel.addItemListener(new ItemListener()
         {
@@ -139,7 +147,7 @@ public class MapFrame extends JFrame
         this.add(lrgVessel);
 
         // This button will start the sim.
-        beginButton = new JButton("Begin simulation");
+        JButton beginButton = new JButton("Begin simulation");
         beginButton.setBounds(330, 550, 140, 30);
         beginButton.addActionListener(new ActionListener()
         {
@@ -150,7 +158,8 @@ public class MapFrame extends JFrame
                 {
                     simulation = new Simulation(journey, vesselList);
                     simulation.runSim();
-                }else
+                }
+                else
                 {
                     System.out.println("TOO SMALL BRO");
                 }
@@ -266,7 +275,6 @@ public class MapFrame extends JFrame
 
         });
 
-
         this.getContentPane().setLayout(new BorderLayout());
         this.addWindowListener(new WindowAdapter()
         {
@@ -288,6 +296,7 @@ public class MapFrame extends JFrame
             }
         };
 
+        //Handle key presses.
         map.addKeyListener(new KeyListener()
         {
             @Override
@@ -341,11 +350,19 @@ public class MapFrame extends JFrame
         this.pack();
     }
 
+    /**
+     * Start the map refresh timer.
+     */
     public void startTimer()
     {
         timer.start();
     }
 
+    /**
+     * Get the path to map sample data.
+     *
+     * @return The path to map sample data.
+     */
     private String getPathSampleData()
     {
         String dataPath = null;
@@ -367,11 +384,21 @@ public class MapFrame extends JFrame
         return dataPath;
     }
 
+    /**
+     * Display an inputted message as a JOptionPane popup.
+     *
+     * @param message The message to be displayed.
+     */
     private void showErrorMsg(String message)
     {
         JOptionPane.showMessageDialog(null, message, "", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Map overlay.
+     *
+     * Polyline of trip sections.
+     */
     private class MyOverlay extends MapOverlay
     {
         double startLat = 0, startLong = 0, endLat, endLong;
@@ -416,7 +443,12 @@ public class MapFrame extends JFrame
                                                              ip.getWavDir(),
                                                              ip.getWavPeriod());
 
-                        TripSection t = new TripSection(startLat, startLong, endLat, endLong, ip.getSpeedLimit(), sectionWeather);
+                        TripSection t = new TripSection(startLat,
+                                                        startLong,
+                                                        endLat,
+                                                        endLong,
+                                                        ip.getSpeedLimit(),
+                                                        sectionWeather);
                         journey.add(t);
                         startLat = endLat;
                         startLong = endLong;
@@ -429,50 +461,6 @@ public class MapFrame extends JFrame
                         System.out.println("CANCELED");
                     }
                 }
-            }
-        }
-
-        @Override
-        public void onMouseDragged(MouseEvent event)
-        {
-            super.onMouseDragged(event);
-        }
-
-        @Override
-        public void onMousePressed(MouseEvent event)
-        {
-            super.onMousePressed(event);
-            switch (event.getButton())
-            {
-                case MouseEvent.BUTTON1:
-                    mouseOne = true;
-                    break;
-                case MouseEvent.BUTTON2:
-                    mouseTwo = true;
-                    break;
-                case MouseEvent.BUTTON3:
-                    mouseThree = true;
-                    break;
-                default:
-            }
-        }
-
-        @Override
-        public void onMouseReleased(MouseEvent event)
-        {
-            super.onMouseReleased(event);
-            switch (event.getButton())
-            {
-                case MouseEvent.BUTTON1:
-                    mouseOne = false;
-                    break;
-                case MouseEvent.BUTTON2:
-                    mouseTwo = false;
-                    break;
-                case MouseEvent.BUTTON3:
-                    mouseThree = false;
-                    break;
-                default:
             }
         }
     }

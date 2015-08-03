@@ -4,13 +4,21 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * @author Ian Weeks (30/7/15)
+ * OutputFrame
+ *
+ * Displays the results of the simulation.
+ *
+ * @author Ian Weeks (30/07/2015)
  */
 public class OutputFrame extends JFrame
 {
     private JTextArea textAreaOne, textAreaTwo;
-    private JScrollPane scrollPane;
 
+    /**
+     *  OutputFrame constructor
+     *
+     * @param vesselName The name of the vessel.
+     */
     public OutputFrame(String vesselName)
     {
         this.setTitle(vesselName + " Simulation Results");
@@ -25,7 +33,9 @@ public class OutputFrame extends JFrame
         textAreaOne = new JTextArea ();
         textAreaOne.setFont(new Font("Courier", Font.PLAIN, 12));
         textAreaOne.setEditable(false);
-        scrollPane = new JScrollPane (textAreaOne, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        JScrollPane scrollPane = new JScrollPane(textAreaOne,
+                                                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                                                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setBounds(0, 0, 800, 400);
         panel.add(scrollPane);
 
@@ -43,11 +53,21 @@ public class OutputFrame extends JFrame
         this.pack();
     }
 
+    /**
+     * Set the text for the trip section display.
+     *
+     * @param input Trip sections information.
+     */
     public void setTextAreaOne(String input)
     {
         this.textAreaOne.setText(input);
     }
 
+    /**
+     * Set the text for the summary display.
+     *
+     * @param input Summary information.
+     */
     public void setTextAreaTwo(String input)
     {
         this.textAreaTwo.setText(input);

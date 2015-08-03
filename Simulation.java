@@ -7,9 +7,9 @@ import java.util.ArrayList;
 
 /**
  * This is where the simulation takes place.
- * <p/>
+ * <p>
  * A simulation requires a grouping on TripSection objects in the form of a Journey.
- * <p/>
+ * <p>
  * Created by Ian Weeks on 30/06/2015.
  */
 public class Simulation
