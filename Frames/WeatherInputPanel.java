@@ -7,20 +7,20 @@ import javax.swing.plaf.ComponentUI;
 import java.awt.*;
 
 /**
- * Input panel.
+ * Weather input panel.
  *
  * Speed and weather input panel for each trip section.
  *
  * @author Ian Weeks (29/07/2015)
  */
-public class InputPanel extends JPanel
+public class WeatherInputPanel extends JPanel
 {
     private JSlider speedLimit, wavMag, wavDir, winMag, winDir, wavPeriod;
 
     /**
-     * InputPanel constructor.
+     * WeatherInputPanel constructor.
      */
-    public InputPanel()
+    public WeatherInputPanel()
     {
         this.setPreferredSize(new Dimension(650, 340));
         this.setLayout(null);

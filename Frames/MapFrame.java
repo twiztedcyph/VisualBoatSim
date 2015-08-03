@@ -50,7 +50,7 @@ public class MapFrame extends JFrame
     private final int TRANSPARENCY = 20; // 0 is opaque, 100 is transparent
     private final String FSP = System.getProperty("file.separator");
     private Journey journey;
-    private InputPanel ip;
+    private WeatherInputPanel ip;
     private Simulation simulation;
     private ArrayList<Vessel> vesselList;
 
@@ -62,7 +62,7 @@ public class MapFrame extends JFrame
     public MapFrame() throws IOException
     {
         journey = new Journey();
-        ip = new InputPanel();
+        ip = new WeatherInputPanel();
         vesselList = new ArrayList<Vessel>();
 
         //Vessel setup.
