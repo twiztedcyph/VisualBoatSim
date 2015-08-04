@@ -40,6 +40,7 @@ public class MapFrame extends JFrame
 {
     private JMap map;
     private int pointerID, lineID;
+    private double pax, weight;
     private boolean firstUpdate = true;
     private Timer timer;
     private com.esri.core.geometry.Point point;
@@ -64,6 +65,21 @@ public class MapFrame extends JFrame
         journey = new Journey();
         ip = new WeatherInputPanel();
         vesselList = new ArrayList<Vessel>();
+        JobInputPanel jip = new JobInputPanel();
+
+        int choice = JOptionPane.showConfirmDialog(null,
+                                                   jip,
+                                                   "Job parameter input",
+                                                   JOptionPane.OK_CANCEL_OPTION,
+                                                   JOptionPane.PLAIN_MESSAGE);
+
+        if (choice == JOptionPane.CANCEL_OPTION || choice == JOptionPane.CLOSED_OPTION)
+        {
+            System.exit(0);
+        }
+
+        pax = jip.getPax();
+        weight = jip.getCargoWeight();
 
         //Vessel setup.
         final DartFisher dartFisher = new DartFisher(2, 30000, 12);
@@ -156,7 +172,7 @@ public class MapFrame extends JFrame
             {
                 if (journey.getSize() >= 1 && vesselList.size() > 0)
                 {
-                    simulation = new Simulation(journey, vesselList);
+                    simulation = new Simulation(journey, vesselList, pax, weight);
                     simulation.runSim();
                 }
                 else
@@ -334,7 +350,7 @@ public class MapFrame extends JFrame
                         map.dispose();
                         System.exit(0);
                     default:
-                        System.out.println(e.getKeyCode());
+                        System.out.println("Keycode '" + e.getKeyCode() + "' not recognised.");
                 }
             }
 

@@ -4,12 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
+ * Basic input for the job specifications
+ *
  * @author Ian Weeks
  */
 public class JobInputPanel extends JPanel
 {
     private JTextField paxInput, cargoWeightInput;
 
+    /**
+     * JobInputPanel constructor.
+     */
     public JobInputPanel()
     {
         this.setPreferredSize(new Dimension(120, 80));
@@ -32,6 +37,25 @@ public class JobInputPanel extends JPanel
         cargoWeightInput = new JTextField();
         cargoWeightInput.setBounds(140, 40, 50, 20);
         this.add(cargoWeightInput);
+    }
 
+    /**
+     * Get the number of pax for this journey.
+     *
+     * @return The number of pax for this journey.
+     */
+    public double getPax()
+    {
+        return Double.valueOf(paxInput.getText());
+    }
+
+    /**
+     * Get the cargo weight for this journey.
+     *
+     * @return The cargo weight for this journey.
+     */
+    public double getCargoWeight()
+    {
+        return Double.valueOf(cargoWeightInput.getText());
     }
 }

@@ -18,6 +18,7 @@ public class Simulation
     //Grouping of trip sections.
     private Journey journey;
     private ArrayList<Vessel> vesselList;
+    private double pax, weight;
 
     /**
      * Constructor for the simulation class.
@@ -25,10 +26,12 @@ public class Simulation
      * @param journey The grouping of trip sections to make a single journey.
      * @param vesselList The list of vessels to be considered for this journey.
      */
-    public Simulation(Journey journey, ArrayList<Vessel> vesselList)
+    public Simulation(Journey journey, ArrayList<Vessel> vesselList, double pax, double weight)
     {
         this.journey = journey;
         this.vesselList = vesselList;
+        this.pax = pax;
+        this.weight = weight;
     }
 
     /**
@@ -39,6 +42,8 @@ public class Simulation
         for (Vessel vessel : vesselList)
         {
             boolean safeWaveExceeded = false;
+            boolean paxExceeded = pax > vessel.getMaxPAX();
+            boolean weightExceeded = weight > vessel.getMaxCargoWeight();
 
             OutputFrame outputFrame = new OutputFrame(vessel.getClass().getName());
             StringBuilder result = new StringBuilder();
@@ -185,7 +190,15 @@ public class Simulation
 
             if (safeWaveExceeded)
             {
-                summary += "SAFE WAVE HEIGHT EXCEEDED.\nCANNOT USE THIS VESSEL";
+                summary += "SAFE WAVE HEIGHT EXCEEDED.\nCANNOT USE THIS VESSEL\n";
+            }
+            if (paxExceeded)
+            {
+                summary += "VESSEL CANNOT CARRY THE REQUIRED AMOUNT OF PASSENGERS.\nCANNOT USE THIS VESSEL\n";
+            }
+            if (weightExceeded)
+            {
+                summary += "SAFE CARGO WEIGHT EXCEEDED.\nCANNOT USE THIS VESSEL";
             }
 
             outputFrame.setTextAreaTwo(summary);

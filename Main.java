@@ -1,6 +1,5 @@
 package com.twizted;
 
-import com.twizted.Frames.JobInputPanel;
 import com.twizted.Frames.MapFrame;
 
 import javax.swing.*;
@@ -25,29 +24,33 @@ public class Main
         // Set the user directory for ArcGIS.
         System.setProperty("user.dir", "C:\\Program Files (x86)\\ArcGIS SDKs\\java10.2.4\\");
 
-        JOptionPane.showConfirmDialog(null,
-                                      new JobInputPanel(),
-                                      "Job parameter input",
-                                      JOptionPane.OK_CANCEL_OPTION,
-                                      JOptionPane.PLAIN_MESSAGE);
-
-//        SwingUtilities.invokeLater(new Runnable()
-//        {
-//            @Override
-//            public void run()
-//            {
-//                try
-//                {
-//                    // Init and start the program.
-//                    MapFrame mapFrame = new MapFrame();
-//                    mapFrame.setVisible(true);
-//                    mapFrame.startTimer();
+//        //Vessel setup.
+//        final DartFisher dartFisher = new DartFisher(2, 30000, 12);
+//        final SmallerVessel smallerVessel = new SmallerVessel(1, 5000, 3);
+//        final LargerVessel largerVessel = new LargerVessel(4, 50000, 25);
 //
-//                } catch (IOException e)
-//                {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+//        for (int i = 0; i < 40; i++)
+//        {
+//            System.out.printf("%d\t%f\t%f\t%f\n", i, smallerVessel.getFPH(smallerVessel.getRPM(i)), dartFisher.getFPH(dartFisher.getRPM(i)), largerVessel.getFPH(largerVessel.getRPM(i)));
+//        }
+
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    // Init and start the program.
+                    MapFrame mapFrame = new MapFrame();
+                    mapFrame.setVisible(true);
+                    mapFrame.startTimer();
+
+                } catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
