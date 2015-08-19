@@ -6,6 +6,7 @@ import javax.annotation.Generated;
 import java.util.ArrayList;
 
 /**
+ * @author jsonschema2pojo.com
  * @author Ian Weeks
  */
 public class Forecast
@@ -17,11 +18,17 @@ public class Forecast
     /**
      * @return The WeatherForecast
      */
+    @SuppressWarnings("unused")
     public ArrayList<WeatherForecast> getWeatherForecast()
     {
         return WeatherForecast;
     }
 
+    /**
+     * Get a string representation of this object.
+     *
+     * @return A string representation of this object.
+     */
     @Override
     public String toString()
     {
@@ -590,6 +597,11 @@ public class Forecast
             this.WeatherIcon = WeatherIcon;
         }
 
+        /**
+         * Get a string representation of this object.
+         *
+         * @return A string representation of this object.
+         */
         @Override
         public String toString()
         {

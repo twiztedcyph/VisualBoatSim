@@ -33,6 +33,12 @@ public class OutputFrame extends JFrame
         panel.add(tabbedPane);
     }
 
+    /**
+     * Add a tab to the panel in this frame.
+     *
+     * @param panelName The name of the panel to be added.
+     * @param panel The panel to be added.
+     */
     public void addTabPanel(String panelName, JPanel panel)
     {
         tabbedPane.add(panelName, panel);

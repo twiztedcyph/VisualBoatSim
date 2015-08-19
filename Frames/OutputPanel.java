@@ -4,12 +4,17 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
+ * Output panel for simulation results.
+ *
  * @author Ian Weeks
  */
 public class OutputPanel extends JPanel
 {
     private JTextArea textAreaOne, textAreaTwo, textAreaThree;
-    
+
+    /**
+     * Constructor for output panel.
+     */
     public OutputPanel()
     {
         this.setPreferredSize(new Dimension(800, 600));

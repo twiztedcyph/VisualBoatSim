@@ -33,11 +33,14 @@ public class Current
         this.CurrentWeather = CurrentWeather;
     }
 
+    /**
+     * Get a string representation of this object.
+     *
+     * @return A string representation of this object.
+     */
     @Override
     public String toString()
     {
-        //return "Current:\n\tCurrentWeather" + CurrentWeather;
-
         return "Current:\n" +
                 "\t\tType               = " + "JOINT"                                   + "\n" +
                 "\t\tIssued             = " + CurrentWeather.get(0).Issued              + "\n" +
@@ -68,6 +71,11 @@ public class Current
                 "\t\tWeatherIcon        = " + CurrentWeather.get(1).WeatherIcon         + "\n";
     }
 
+    /**
+     * Get a string summary of this object.
+     *
+     * @return A string summary of this object.
+     */
     public String getSummary()
     {
         return String.format("Lat: %.4f<br />" +
@@ -577,6 +585,11 @@ public class Current
             this.WeatherIcon = WeatherIcon;
         }
 
+        /**
+         * Get a string representation of this object.
+         *
+         * @return A string representation of this object.
+         */
         @Override
         public String toString()
         {

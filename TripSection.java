@@ -90,6 +90,11 @@ public class TripSection
         return sectionWeather;
     }
 
+    /**
+     * Get a string representation of this object.
+     *
+     * @return A string representation of this object.
+     */
     @Override
     public String toString()
     {

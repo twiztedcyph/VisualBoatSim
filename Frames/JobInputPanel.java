@@ -2,8 +2,6 @@ package com.twizted.Frames;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Arc2D;
-import java.awt.geom.CubicCurve2D;
 
 /**
  * Basic input for the job specifications

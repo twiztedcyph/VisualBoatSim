@@ -27,8 +27,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -94,9 +92,9 @@ public class MapFrame extends JFrame
         final SmallerVessel smallerVessel = new SmallerVessel(1, 5000, 50, 3);
         final LargerVessel largerVessel = new LargerVessel(4, 50000, 20, 25);
 
-        vesselList.add(smallerVessel);
+        //vesselList.add(smallerVessel);
         vesselList.add(dartFisher);
-        vesselList.add(largerVessel);
+        //vesselList.add(largerVessel);
 
         mySpat = SpatialReference.create(SpatialReference.WKID_WGS84);
         final Image pointerImage = ImageIO.read(new File("red_dot.png"));
@@ -126,7 +124,7 @@ public class MapFrame extends JFrame
                 System.out.println(e.getComponent().getWidth() + " " + e.getComponent().getHeight());
                 panel.setBounds(0, 0, e.getComponent().getWidth(), e.getComponent().getHeight());
                 map.setBounds(0, 0, e.getComponent().getWidth(), e.getComponent().getHeight());
-                beginButton.setBounds((int)(e.getComponent().getWidth() * 0.5) - 70, (int)(e.getComponent().getHeight() * 0.9) - 50, 140, 30);
+                beginButton.setBounds((int)(e.getComponent().getWidth() * 0.5) - 70, (int)(e.getComponent().getHeight() * 0.9) - 30, 140, 30);
             }
 
             @Override
@@ -154,7 +152,7 @@ public class MapFrame extends JFrame
 
         //Vessel selection using check boxes.
         JCheckBox smlVessel = new JCheckBox("Smaller Vessel");
-        smlVessel.setSelected(true);
+        //smlVessel.setSelected(true);
         smlVessel.setMnemonic(KeyEvent.VK_S);
         smlVessel.addItemListener(new ItemListener()
         {
@@ -197,7 +195,7 @@ public class MapFrame extends JFrame
 
         JCheckBox lrgVessel = new JCheckBox("Larger Vessel");
         lrgVessel.setMnemonic(KeyEvent.VK_F);
-        lrgVessel.setSelected(true);
+        //lrgVessel.setSelected(true);
         lrgVessel.addItemListener(new ItemListener()
         {
             @Override
@@ -216,7 +214,7 @@ public class MapFrame extends JFrame
         this.add(lrgVessel);
 
         // This button will start the sim.
-        beginButton.setBounds(330, 550, 140, 30);
+        beginButton.setBounds(330, 570, 140, 30);
         beginButton.addActionListener(new ActionListener()
         {
             @Override
@@ -386,6 +384,7 @@ public class MapFrame extends JFrame
                         firstUpdate = true;
                         journey.clear();
                         polyline.setEmpty();
+                        map.removeAllMarkerGraphics();
                         break;
                     case KeyEvent.VK_ESCAPE:
                         System.out.println("User requested exit.");

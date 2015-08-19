@@ -154,6 +154,14 @@ public class Weather
 
     }
 
+    /**
+     * Convert cardinal compass points into degrees.
+     *
+     * This method returns north if the input is not recognised.
+     *
+     * @param cardinal The cardinal point to be converted.
+     * @return A value in degrees for the given cardinal point.
+     */
     private double convertCardinal(String cardinal)
     {
         String directions[] = {
@@ -171,11 +179,18 @@ public class Weather
         return 0.0;
     }
 
-    private boolean isNumeric(String str)
+    /**
+     * Check if a string is numeric.
+     *
+     * @param string The string to be checked.
+     * @return True if the string is numeric.  False otherwise.
+     */
+    private boolean isNumeric(String string)
     {
         try
         {
-            double d = Double.parseDouble(str);
+            //noinspection ResultOfMethodCallIgnored
+            Double.parseDouble(string);
         }
         catch(NumberFormatException nfe)
         {

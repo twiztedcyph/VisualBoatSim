@@ -1,7 +1,6 @@
 package com.twizted;
 
 import com.twizted.Frames.MapFrame;
-import com.twizted.Frames.WeatherInputPanel;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -27,6 +26,7 @@ public class Main
 
         try
         {
+            // Make the program use the current windows look and feel / theme settings.
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | IllegalAccessException |
                 UnsupportedLookAndFeelException | InstantiationException e)
@@ -34,6 +34,7 @@ public class Main
             e.printStackTrace();
         }
 
+        // Use AWT event-dispatch thread coz of GUI updates.
         SwingUtilities.invokeLater(new Runnable()
         {
             @Override
