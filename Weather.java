@@ -1,7 +1,9 @@
 package com.twizted;
 
+import com.twizted.WeatherQuest.Current;
+
 /**
- * Weather class
+ * WeatherQuest class
  *
  * Storage class for trip section weather.
  *
@@ -13,7 +15,7 @@ public class Weather
     private Waves waves;
 
     /**
-     * Weather constructor.
+     * WeatherQuest constructor.
      *
      * @param windMagnitude The speed of the wind in knots.
      * @param windBearing The bearing of the wind.
@@ -24,6 +26,18 @@ public class Weather
     public Weather(double windMagnitude, double windBearing, double waveHeight, double waveBearing, double wavePeriod)
     {
         this.wind = new Wind(windMagnitude, windBearing);
+        this.waves = new Waves(waveHeight, waveBearing, wavePeriod);
+    }
+
+    public Weather(Current c)
+    {
+        double windSpeed = isNumeric(c.getCurrentWeather().get(1).getWindSpeed()) ? Double.valueOf(c.getCurrentWeather().get(1).getWindSpeed()) : 0;
+        double waveHeight = isNumeric(c.getCurrentWeather().get(1).getSigWaveHeight()) ? Double.valueOf(c.getCurrentWeather().get(1).getSigWaveHeight()) : 0;
+        double wavePeriod = isNumeric(c.getCurrentWeather().get(1).getMeanWavePeriod()) ? Double.valueOf(c.getCurrentWeather().get(1).getMeanWavePeriod()) : 1;
+        double waveBearing = convertCardinal(c.getCurrentWeather().get(1).getMeanWaveDirection());
+        double windBearing = convertCardinal(c.getCurrentWeather().get(1).getWindDirection());
+
+        this.wind = new Wind(windSpeed, windBearing);
         this.waves = new Waves(waveHeight, waveBearing, wavePeriod);
     }
 
@@ -138,5 +152,35 @@ public class Weather
             return bearing;
         }
 
+    }
+
+    private double convertCardinal(String cardinal)
+    {
+        String directions[] = {
+                "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+                "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW",
+                "N"};
+
+        for (int i = 0; i < directions.length; i++)
+        {
+            if (directions[i].equals(cardinal.trim().toUpperCase()))
+            {
+                return 22.5 * i;
+            }
+        }
+        return 0.0;
+    }
+
+    private boolean isNumeric(String str)
+    {
+        try
+        {
+            double d = Double.parseDouble(str);
+        }
+        catch(NumberFormatException nfe)
+        {
+            return false;
+        }
+        return true;
     }
 }

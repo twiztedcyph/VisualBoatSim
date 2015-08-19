@@ -11,6 +11,7 @@ import com.esri.core.symbol.PictureMarkerSymbol;
 import com.esri.core.symbol.SimpleLineSymbol;
 import com.esri.map.*;
 import com.esri.runtime.ArcGISRuntime;
+import com.twizted.GSON.JSON;
 import com.twizted.Journey;
 import com.twizted.Simulation;
 import com.twizted.TripSection;
@@ -19,14 +20,19 @@ import com.twizted.Vessels.LargerVessel;
 import com.twizted.Vessels.SmallerVessel;
 import com.twizted.Vessels.Vessel;
 import com.twizted.Weather;
+import com.twizted.WeatherQuest.Current;
+import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -54,6 +60,7 @@ public class MapFrame extends JFrame
     private WeatherInputPanel ip;
     private Simulation simulation;
     private ArrayList<Vessel> vesselList;
+    private JSON json;
 
     /**
      * MapFrame constructor.
@@ -63,8 +70,9 @@ public class MapFrame extends JFrame
     public MapFrame() throws IOException
     {
         journey = new Journey();
+        json = new JSON();
         ip = new WeatherInputPanel();
-        vesselList = new ArrayList<Vessel>();
+        vesselList = new ArrayList<>();
         JobInputPanel jip = new JobInputPanel();
 
         int choice = JOptionPane.showConfirmDialog(null,
@@ -82,9 +90,13 @@ public class MapFrame extends JFrame
         weight = jip.getCargoWeight();
 
         //Vessel setup.
-        final DartFisher dartFisher = new DartFisher(2, 30000, 12);
-        final SmallerVessel smallerVessel = new SmallerVessel(1, 5000, 3);
-        final LargerVessel largerVessel = new LargerVessel(4, 50000, 25);
+        final DartFisher dartFisher = new DartFisher(2, 30000, 30, 12);
+        final SmallerVessel smallerVessel = new SmallerVessel(1, 5000, 50, 3);
+        final LargerVessel largerVessel = new LargerVessel(4, 50000, 20, 25);
+
+        vesselList.add(smallerVessel);
+        vesselList.add(dartFisher);
+        vesselList.add(largerVessel);
 
         mySpat = SpatialReference.create(SpatialReference.WKID_WGS84);
         final Image pointerImage = ImageIO.read(new File("red_dot.png"));
@@ -94,8 +106,45 @@ public class MapFrame extends JFrame
             @Override
             public void windowClosing(WindowEvent e)
             {
+                journey = null;
+                json = null;
+                simulation = null;
                 map.dispose();
                 System.exit(0);
+            }
+        });
+
+        final JPanel panel = (JPanel) this.getContentPane();
+        panel.setPreferredSize(new Dimension(800, 600));
+        final JButton beginButton = new JButton("Begin simulation");
+
+        this.addComponentListener(new ComponentListener()
+        {
+            @Override
+            public void componentResized(ComponentEvent e)
+            {
+                System.out.println(e.getComponent().getWidth() + " " + e.getComponent().getHeight());
+                panel.setBounds(0, 0, e.getComponent().getWidth(), e.getComponent().getHeight());
+                map.setBounds(0, 0, e.getComponent().getWidth(), e.getComponent().getHeight());
+                beginButton.setBounds((int)(e.getComponent().getWidth() * 0.5) - 70, (int)(e.getComponent().getHeight() * 0.9) - 50, 140, 30);
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e)
+            {
+
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e)
+            {
+
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e)
+            {
+
             }
         });
         this.setTitle("Vessel Location");
@@ -103,11 +152,10 @@ public class MapFrame extends JFrame
 
         polyline = new Polyline();
 
-        JPanel panel = (JPanel) this.getContentPane();
-        panel.setPreferredSize(new Dimension(800, 600));
-
         //Vessel selection using check boxes.
         JCheckBox smlVessel = new JCheckBox("Smaller Vessel");
+        smlVessel.setSelected(true);
+        smlVessel.setMnemonic(KeyEvent.VK_S);
         smlVessel.addItemListener(new ItemListener()
         {
             @Override
@@ -116,7 +164,8 @@ public class MapFrame extends JFrame
                 if (e.getStateChange() == ItemEvent.SELECTED)
                 {
                     vesselList.add(smallerVessel);
-                }else if(e.getStateChange() == ItemEvent.DESELECTED)
+                }
+                else if (e.getStateChange() == ItemEvent.DESELECTED)
                 {
                     vesselList.remove(smallerVessel);
                 }
@@ -126,6 +175,8 @@ public class MapFrame extends JFrame
         this.add(smlVessel);
 
         JCheckBox darVessel = new JCheckBox("Dart Fisher");
+        darVessel.setMnemonic(KeyEvent.VK_F);
+        darVessel.setSelected(true);
         darVessel.addItemListener(new ItemListener()
         {
             @Override
@@ -145,6 +196,8 @@ public class MapFrame extends JFrame
         this.add(darVessel);
 
         JCheckBox lrgVessel = new JCheckBox("Larger Vessel");
+        lrgVessel.setMnemonic(KeyEvent.VK_F);
+        lrgVessel.setSelected(true);
         lrgVessel.addItemListener(new ItemListener()
         {
             @Override
@@ -163,7 +216,6 @@ public class MapFrame extends JFrame
         this.add(lrgVessel);
 
         // This button will start the sim.
-        JButton beginButton = new JButton("Begin simulation");
         beginButton.setBounds(330, 550, 140, 30);
         beginButton.addActionListener(new ActionListener()
         {
@@ -206,10 +258,10 @@ public class MapFrame extends JFrame
         // get dynamic workspaces from service
         WorkspaceInfoSet workspaceInfoSet = localMapService.getDynamicWorkspaces();
 
-        //C:\Users\Twiz\Dropbox\Java Projects\VisualBoatSim
-        //G:\Ten_Files\Dropbox\Java Projects\VisualBoatSim
+        //C:\Users\Cypher\Dropbox\Java Projects\VisualBoatSim
+        //G:\Dropbox\Java Projects\VisualBoatSim
         WorkspaceInfo workspaceInfo = WorkspaceInfo.CreateShapefileFolderConnection(
-                "WORKSPACE", "C:\\Users\\Twiz\\Dropbox\\Java Projects\\VisualBoatSim");
+                "WORKSPACE", "C:\\Users\\Cypher\\Dropbox\\Java Projects\\VisualBoatSim");
 
         // set dynamic workspaces for our local map service
         workspaceInfoSet.add(workspaceInfo);
@@ -292,15 +344,6 @@ public class MapFrame extends JFrame
         });
 
         this.getContentPane().setLayout(new BorderLayout());
-        this.addWindowListener(new WindowAdapter()
-        {
-            @Override
-            public void windowClosing(WindowEvent e)
-            {
-                super.windowClosing(e);
-                map.dispose();
-            }
-        });
 
         ActionListener actionListener = new ActionListener()
         {
@@ -350,7 +393,7 @@ public class MapFrame extends JFrame
                         map.dispose();
                         System.exit(0);
                     default:
-                        System.out.println("Keycode '" + e.getKeyCode() + "' not recognised.");
+
                 }
             }
 
@@ -424,58 +467,68 @@ public class MapFrame extends JFrame
 
             if (event.getButton() == MouseEvent.BUTTON3)
             {
-                point = map.toMapPoint(event.getX(), event.getY());
-                Point p1 = (Point) GeometryEngine.project(point, map.getSpatialReference(), mySpat);
-
-                if (firstUpdate)
+                try
                 {
-                    polyline.setEmpty();
-                    polyline.startPath(point);
-                    firstUpdate = false;
-                    startLat = p1.getX();
-                    startLong = p1.getY();
-                } else
-                {
-                    polyline.lineTo(point);
-                    endLat = p1.getX();
-                    endLong = p1.getY();
+                    point = map.toMapPoint(event.getX(), event.getY());
+                    Point p1 = (Point) GeometryEngine.project(point, map.getSpatialReference(), mySpat);
 
-                    int option = JOptionPane.showConfirmDialog(null,
-                            ip,
-                            "Journey section details",
-                            JOptionPane.OK_CANCEL_OPTION,
-                            JOptionPane.PLAIN_MESSAGE);
+                    BufferedImage weatherIcon;
 
-                    if(option == JOptionPane.OK_OPTION)
+                    if (firstUpdate)
                     {
+                        polyline.setEmpty();
+                        polyline.startPath(point);
+                        firstUpdate = false;
+                        startLat = p1.getX();
+                        startLong = p1.getY();
+                    } else
+                    {
+                        polyline.lineTo(point);
+                        endLat = p1.getX();
+                        endLong = p1.getY();
+
+                        int option = JOptionPane.showConfirmDialog(null,
+                                ip,
+                                "Journey section details",
+                                JOptionPane.OK_CANCEL_OPTION,
+                                JOptionPane.PLAIN_MESSAGE);
+
+                        if(option == JOptionPane.OK_OPTION)
+                        {
                         /*
                          * Sure this part is annoying but picture the user
                          * dragging out the route and then these details
                          * are fetched automatically.
                          */
-                        Weather sectionWeather = new Weather(ip.getWinMag(),
-                                                             ip.getWinDir(),
-                                                             ip.getWavMag(),
-                                                             ip.getWavDir(),
-                                                             ip.getWavPeriod());
+                            Current c =  json.fetchCurrent(p1.getY(), p1.getX());
+                            weatherIcon = ImageIO.read(new URL(c.getCurrentWeather().get(1).getWeatherIcon()));
 
-                        TripSection t = new TripSection(startLat,
-                                                        startLong,
-                                                        endLat,
-                                                        endLong,
-                                                        ip.getSpeedLimit(),
-                                                        sectionWeather);
-                        journey.add(t);
-                        startLat = endLat;
-                        startLong = endLong;
-                    }else
-                    {
-                        if (polyline.getPointCount() > 0)
+                            map.addMarkerGraphic(p1.getY(), p1.getX(), "Point weather", c.getSummary(), null, null, Scalr.resize(weatherIcon, Scalr.Method.BALANCED, 50, 50));
+                            Weather sectionWeather;
+
+                            sectionWeather = new Weather(c);
+
+                            TripSection t = new TripSection(startLat,
+                                    startLong,
+                                    endLat,
+                                    endLong,
+                                    ip.getSpeedLimit(),
+                                    sectionWeather);
+                            journey.add(t);
+                            startLat = endLat;
+                            startLong = endLong;
+                        }else
                         {
-                            polyline.removePoint(polyline.getPointCount() - 1);
+                            if (polyline.getPointCount() > 0)
+                            {
+                                polyline.removePoint(polyline.getPointCount() - 1);
+                            }
+                            System.out.println("CANCELED");
                         }
-                        System.out.println("CANCELED");
                     }
+                }catch(IOException e)
+                {
+                    e.printStackTrace();
                 }
             }
         }

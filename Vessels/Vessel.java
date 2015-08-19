@@ -7,7 +7,7 @@ package com.twizted.Vessels;
  */
 public abstract class Vessel
 {
-    private double maxSafeWaveHeight, maxCargoWeight;
+    private double maxSafeWaveHeight, maxCargoWeight, maxSpeed;
     private int maxPAX;
 
     /**
@@ -15,12 +15,14 @@ public abstract class Vessel
      *
      * @param maxSafeWaveHeight The maximum safe wave height this vessel can handle.
      * @param maxCargoWeight The maximum cargo weight this vessel can handle.
+     * @param maxSpeed The maximum speed this vessel can maintain.
      * @param maxPAX The maximum number of PAX this vessel can handle.
      */
-    public Vessel(double maxSafeWaveHeight, double maxCargoWeight, int maxPAX)
+    public Vessel(double maxSafeWaveHeight, double maxCargoWeight, double maxSpeed, int maxPAX)
     {
         this.maxSafeWaveHeight = maxSafeWaveHeight;
         this.maxCargoWeight = maxCargoWeight;
+        this.maxSpeed = maxSpeed;
         this.maxPAX = maxPAX;
     }
 
@@ -68,5 +70,15 @@ public abstract class Vessel
     public int getMaxPAX()
     {
         return maxPAX;
+    }
+
+    /**
+     * Get the maximum speed this vessel can maintain.
+     *
+     * @return The maximum speed this vessel can maintain.
+     */
+    public double getMaxSpeed()
+    {
+        return this.maxSpeed;
     }
 }

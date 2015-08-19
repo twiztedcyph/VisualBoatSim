@@ -1,6 +1,7 @@
 package com.twizted;
 
 import com.twizted.Frames.MapFrame;
+import com.twizted.Frames.WeatherInputPanel;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -24,15 +25,14 @@ public class Main
         // Set the user directory for ArcGIS.
         System.setProperty("user.dir", "C:\\Program Files (x86)\\ArcGIS SDKs\\java10.2.4\\");
 
-//        //Vessel setup.
-//        final DartFisher dartFisher = new DartFisher(2, 30000, 12);
-//        final SmallerVessel smallerVessel = new SmallerVessel(1, 5000, 3);
-//        final LargerVessel largerVessel = new LargerVessel(4, 50000, 25);
-//
-//        for (int i = 0; i < 40; i++)
-//        {
-//            System.out.printf("%d\t%f\t%f\t%f\n", i, smallerVessel.getFPH(smallerVessel.getRPM(i)), dartFisher.getFPH(dartFisher.getRPM(i)), largerVessel.getFPH(largerVessel.getRPM(i)));
-//        }
+        try
+        {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | IllegalAccessException |
+                UnsupportedLookAndFeelException | InstantiationException e)
+        {
+            e.printStackTrace();
+        }
 
         SwingUtilities.invokeLater(new Runnable()
         {

@@ -2,6 +2,8 @@ package com.twizted.Frames;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Arc2D;
+import java.awt.geom.CubicCurve2D;
 
 /**
  * Basic input for the job specifications
@@ -10,43 +12,51 @@ import java.awt.*;
  */
 public class JobInputPanel extends JPanel
 {
-    private JTextField paxInput, cargoWeightInput;
+    private JTextField paxInput, crewInput, cargoWeightInput;
 
     /**
      * JobInputPanel constructor.
      */
     public JobInputPanel()
     {
-        this.setPreferredSize(new Dimension(120, 80));
+        this.setPreferredSize(new Dimension(120, 100));
         this.setLayout(null);
 
-        JLabel paxLabel, cargoWeightLabel;
+        JLabel paxLabel, crewLabel, cargoWeightLabel;
 
-        paxLabel = new JLabel("Passengers:");
-        paxLabel.setBounds(40, 15, 90, 20);
+        crewLabel = new JLabel("CREW:");
+        crewLabel.setBounds(40, 15, 90, 20);
+        this.add(crewLabel);
+
+        crewInput = new JTextField();
+        crewInput.setBounds(140, 15, 50, 20);
+        this.add(crewInput);
+
+        paxLabel = new JLabel("PAX:");
+        paxLabel.setBounds(40, 40, 90, 20);
         this.add(paxLabel);
 
         paxInput = new JTextField();
-        paxInput.setBounds(140, 15, 50, 20);
+        paxInput.setBounds(140, 40, 50, 20);
         this.add(paxInput);
 
-        cargoWeightLabel = new JLabel("Cargo weight:");
-        cargoWeightLabel.setBounds(40, 40, 90, 20);
+        cargoWeightLabel = new JLabel("CARGO:");
+        cargoWeightLabel.setBounds(40, 65, 90, 20);
         this.add(cargoWeightLabel);
 
         cargoWeightInput = new JTextField();
-        cargoWeightInput.setBounds(140, 40, 50, 20);
+        cargoWeightInput.setBounds(140, 65, 50, 20);
         this.add(cargoWeightInput);
     }
 
     /**
-     * Get the number of pax for this journey.
+     * Get the total number of people for this journey.
      *
-     * @return The number of pax for this journey.
+     * @return The total number of people for this journey.
      */
     public double getPax()
     {
-        return Double.valueOf(paxInput.getText());
+        return Double.valueOf(paxInput.getText()) + Double.valueOf(crewInput.getText());
     }
 
     /**

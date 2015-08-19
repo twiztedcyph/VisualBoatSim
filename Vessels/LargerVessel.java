@@ -14,9 +14,9 @@ public class LargerVessel extends Vessel
      * @param maxCargoWeight The maximum cargo weight this vessel can handle.
      * @param maxPAX The maximum number of PAX this vessel can handle.
      */
-    public LargerVessel(double maxSafeWaveHeight, double maxCargoWeight, int maxPAX)
+    public LargerVessel(double maxSafeWaveHeight, double maxCargoWeight, double maxSpeed, int maxPAX)
     {
-        super(maxSafeWaveHeight, maxCargoWeight, maxPAX);
+        super(maxSafeWaveHeight, maxCargoWeight, maxSpeed, maxPAX);
     }
 
     /**

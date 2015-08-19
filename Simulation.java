@@ -1,6 +1,7 @@
 package com.twizted;
 
 import com.twizted.Frames.OutputFrame;
+import com.twizted.Frames.OutputPanel;
 import com.twizted.Vessels.Vessel;
 
 import java.util.ArrayList;
@@ -39,13 +40,16 @@ public class Simulation
      */
     public void runSim()
     {
+        final double AVERAGE_RADIUS_OF_EARTH = 6371;
+        OutputFrame outputFrame = new OutputFrame();
         for (Vessel vessel : vesselList)
         {
             boolean safeWaveExceeded = false;
             boolean paxExceeded = pax > vessel.getMaxPAX();
             boolean weightExceeded = weight > vessel.getMaxCargoWeight();
 
-            OutputFrame outputFrame = new OutputFrame(vessel.getClass().getName());
+
+            OutputPanel outputPanel = new OutputPanel();
             StringBuilder result = new StringBuilder();
 
             //Keeps track of the trip section number.
@@ -58,7 +62,7 @@ public class Simulation
             for (TripSection trip : journey)
             {
                 safeWaveExceeded = trip.getSectionWeather().getWaves().getHeight() > vessel.getMaxSafeWaveHeight();
-                double speed = trip.getSpeed();
+                double speed = trip.getSpeed() > vessel.getMaxSpeed() ? vessel.getMaxSpeed() : trip.getSpeed();
 
                 //Get the distance and bearing from the inputted latitudes and longitudes.
                 double latDistance = Math.toRadians(trip.getStartLat() - trip.getEndLat());
@@ -70,7 +74,7 @@ public class Simulation
 
                 double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-                final double AVERAGE_RADIUS_OF_EARTH = 6371;
+
                 double distance = AVERAGE_RADIUS_OF_EARTH * c * 0.539956803;
                 double trueDist = distance;
 
@@ -177,33 +181,38 @@ public class Simulation
                 result.append(tripResult);
             }
 
-            outputFrame.setTextAreaOne(result.toString());
+            outputPanel.setTextAreaOne(result.toString());
 
-
+            final double COST_OF_FUEL = 0.95;
             String summary = String.format("\nTotal distance:\t\t%8.2f nautical miles with an extra %.2f nautical " +
                                                    "miles for wave compensation\n" +
                                                    "Total duration:\t\t%8.2f hours\n" +
-                                                   "Total fuel used:\t%8.2f liters\n\n",
+                                                   "Total fuel used:\t%8.2f liters\n",
                                            totalDistance,
                                            totalTrueDist - totalDistance, totalTime,
                                            totalFuel);
 
             if (safeWaveExceeded)
             {
-                summary += "SAFE WAVE HEIGHT EXCEEDED.\nCANNOT USE THIS VESSEL\n";
+                summary += "WAVE HEIGHT LIMIT EXCEEDED. ";
             }
             if (paxExceeded)
             {
-                summary += "VESSEL CANNOT CARRY THE REQUIRED AMOUNT OF PASSENGERS.\nCANNOT USE THIS VESSEL\n";
+                summary += "PAX LIMIT EXCEEDED. ";
             }
             if (weightExceeded)
             {
-                summary += "SAFE CARGO WEIGHT EXCEEDED.\nCANNOT USE THIS VESSEL";
+                summary += "CARGO WEIGHT EXCEEDED. ";
             }
 
-            outputFrame.setTextAreaTwo(summary);
-            outputFrame.setVisible(true);
+            outputPanel.setTextAreaTwo(summary);
+
+
+            outputPanel.setTextAreaThree(String.format("Total fuel cost:\t%8.2f GBP\n", totalFuel * COST_OF_FUEL));
+            outputFrame.addTabPanel(vessel.getClass().getName().replaceAll("com.twizted.Vessels.", ""), outputPanel);
         }
+        outputFrame.pack();
+        outputFrame.setVisible(true);
     }
 
     /**
