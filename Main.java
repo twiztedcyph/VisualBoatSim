@@ -2,7 +2,9 @@ package com.twizted;
 
 import com.twizted.Frames.MapFrame;
 
-import javax.swing.*;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import java.io.IOException;
 
 /**

@@ -71,10 +71,10 @@ public class MapFrame extends JFrame
         json = new JSON();
         ip = new WeatherInputPanel();
         vesselList = new ArrayList<>();
-        JobInputPanel jip = new JobInputPanel();
+        JobInputPanel jobInputPanel = new JobInputPanel();
 
         int choice = JOptionPane.showConfirmDialog(null,
-                                                   jip,
+                                                   jobInputPanel,
                                                    "Job parameter input",
                                                    JOptionPane.OK_CANCEL_OPTION,
                                                    JOptionPane.PLAIN_MESSAGE);
@@ -84,8 +84,8 @@ public class MapFrame extends JFrame
             System.exit(0);
         }
 
-        pax = jip.getPax();
-        weight = jip.getCargoWeight();
+        pax = jobInputPanel.getPax();
+        weight = jobInputPanel.getCargoWeight();
 
         //Vessel setup.
         final DartFisher dartFisher = new DartFisher(2, 30000, 30, 12);
@@ -124,7 +124,7 @@ public class MapFrame extends JFrame
                 System.out.println(e.getComponent().getWidth() + " " + e.getComponent().getHeight());
                 panel.setBounds(0, 0, e.getComponent().getWidth(), e.getComponent().getHeight());
                 map.setBounds(0, 0, e.getComponent().getWidth(), e.getComponent().getHeight());
-                beginButton.setBounds((int)(e.getComponent().getWidth() * 0.5) - 70, (int)(e.getComponent().getHeight() * 0.9) - 30, 140, 30);
+                beginButton.setBounds((int) (e.getComponent().getWidth() * 0.5) - 70, (int) (e.getComponent().getHeight() * 0.9) - 30, 140, 30);
             }
 
             @Override
@@ -162,8 +162,7 @@ public class MapFrame extends JFrame
                 if (e.getStateChange() == ItemEvent.SELECTED)
                 {
                     vesselList.add(smallerVessel);
-                }
-                else if (e.getStateChange() == ItemEvent.DESELECTED)
+                } else if (e.getStateChange() == ItemEvent.DESELECTED)
                 {
                     vesselList.remove(smallerVessel);
                 }
@@ -183,8 +182,7 @@ public class MapFrame extends JFrame
                 if (e.getStateChange() == ItemEvent.SELECTED)
                 {
                     vesselList.add(dartFisher);
-                }
-                else if (e.getStateChange() == ItemEvent.DESELECTED)
+                } else if (e.getStateChange() == ItemEvent.DESELECTED)
                 {
                     vesselList.remove(dartFisher);
                 }
@@ -220,15 +218,64 @@ public class MapFrame extends JFrame
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (journey.getSize() >= 1 && vesselList.size() > 0)
-                {
-                    simulation = new Simulation(journey, vesselList, pax, weight);
-                    simulation.runSim();
-                }
-                else
-                {
+//                if (journey.getSize() >= 1 && vesselList.size() > 0)
+//                {
+//                    simulation = new Simulation(journey, vesselList, pax, weight);
+//                    simulation.runSim();
+//                }
+//                else
+//                {
                     System.out.println("TOO SMALL BRO");
-                }
+
+                    Point p = polyline.getPoint(0);
+                    Point lastPoint = (Point) GeometryEngine.project(p, map.getSpatialReference(), mySpat);
+
+                    Current lastWeather = json.fetchCurrent(lastPoint.getY(), lastPoint.getX());
+
+
+                    for (int i = 1; i < polyline.getPointCount() - 1; i++)
+                    {
+                        BufferedImage weatherIcon = null;
+                        try
+                        {
+                            weatherIcon = ImageIO.read(new URL(lastWeather.getCurrentWeather().get(1).getWeatherIcon()));
+                        } catch (IOException e1)
+                        {
+                            System.out.println(e1.getMessage());
+                        }
+                        System.out.println("Point: " + i);
+
+                        Point c = (Point) GeometryEngine.project(polyline.getPoint(i), map.getSpatialReference(), mySpat);
+                        if (getDist(lastPoint.getY(), lastPoint.getX(), c.getY(), c.getX()) > 4)
+                        {
+                            lastWeather = json.fetchCurrent(c.getY(), c.getX());
+                            lastPoint = c;
+
+                            System.out.println(lastWeather);
+                            try
+                            {
+                                weatherIcon = ImageIO.read(new URL(lastWeather.getCurrentWeather().get(1).getWeatherIcon()));
+                            } catch (IOException e1)
+                            {
+                                System.out.println(e1.getMessage());
+                            }
+                        }
+
+                        //Weather weather = new Weather(lastWeather);
+
+
+                        assert weatherIcon != null;
+                        map.addMarkerGraphic(lastPoint.getY(),
+                                lastPoint.getX(),
+                                "Point weather",
+                                lastWeather.getSummary(),
+                                null,
+                                null,
+                                Scalr.resize(weatherIcon, Scalr.Method.BALANCED, 50, 50));
+                    }
+
+
+//                }
             }
         });
         panel.add(beginButton);
@@ -256,8 +303,8 @@ public class MapFrame extends JFrame
         // get dynamic workspaces from service
         WorkspaceInfoSet workspaceInfoSet = localMapService.getDynamicWorkspaces();
 
-        //C:\Users\Cypher\Dropbox\Java Projects\VisualBoatSim
-        //G:\Dropbox\Java Projects\VisualBoatSim
+        // Laptop:  C:\Users\Cypher\Dropbox\Java Projects\VisualBoatSim
+        // Desktop: G:\Dropbox\Java Projects\VisualBoatSim
         WorkspaceInfo workspaceInfo = WorkspaceInfo.CreateShapefileFolderConnection(
                 "WORKSPACE", "C:\\Users\\Cypher\\Dropbox\\Java Projects\\VisualBoatSim");
 
@@ -336,9 +383,9 @@ public class MapFrame extends JFrame
 
                 lineID = graphicsLayer.addGraphic(lineGraphic);
                 pointerID = graphicsLayer.addGraphic(pointGraphic);
+
+
             }
-
-
         });
 
         this.getContentPane().setLayout(new BorderLayout());
@@ -463,7 +510,6 @@ public class MapFrame extends JFrame
         @Override
         public void onMouseClicked(MouseEvent event)
         {
-
             if (event.getButton() == MouseEvent.BUTTON3)
             {
                 try
@@ -494,18 +540,18 @@ public class MapFrame extends JFrame
 
                         if(option == JOptionPane.OK_OPTION)
                         {
-                        /*
-                         * Sure this part is annoying but picture the user
-                         * dragging out the route and then these details
-                         * are fetched automatically.
-                         */
                             Current c =  json.fetchCurrent(p1.getY(), p1.getX());
                             weatherIcon = ImageIO.read(new URL(c.getCurrentWeather().get(1).getWeatherIcon()));
 
-                            map.addMarkerGraphic(p1.getY(), p1.getX(), "Point weather", c.getSummary(), null, null, Scalr.resize(weatherIcon, Scalr.Method.BALANCED, 50, 50));
-                            Weather sectionWeather;
+                            map.addMarkerGraphic(p1.getY(),
+                                    p1.getX(),
+                                    "Point weather",
+                                    c.getSummary(),
+                                    null,
+                                    null,
+                                    Scalr.resize(weatherIcon, Scalr.Method.BALANCED, 50, 50));
 
-                            sectionWeather = new Weather(c);
+                            Weather sectionWeather = new Weather(c);
 
                             TripSection t = new TripSection(startLat,
                                     startLong,
@@ -529,7 +575,54 @@ public class MapFrame extends JFrame
                 {
                     e.printStackTrace();
                 }
+            }else
+            {
+                super.onMouseClicked(event);
             }
         }
+
+        @Override
+        public void onMouseDragged(MouseEvent event)
+        {
+            if(SwingUtilities.isRightMouseButton(event))
+            {
+                point = map.toMapPoint(event.getX(), event.getY());
+                Point p1 = (Point) GeometryEngine.project(point, map.getSpatialReference(), mySpat);
+
+                if (firstUpdate)
+                {
+                    polyline.setEmpty();
+                    polyline.startPath(point);
+                    firstUpdate = false;
+                    startLat = p1.getX();
+                    startLong = p1.getY();
+                } else
+                {
+                    polyline.lineTo(point);
+                    endLat = p1.getX();
+                    endLong = p1.getY();
+                }
+            }else
+            {
+                super.onMouseDragged(event);
+                System.out.println(event.getButton());
+            }
+        }
+    }
+
+    private double getDist(double startLat, double startLon, double endLat, double endLon)
+    {
+        //Get the distance and bearing from the inputted latitudes and longitudes.
+        double latDistance = Math.toRadians(startLat - endLat);
+        double lngDistance = Math.toRadians(startLon - endLon);
+
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(startLat)) * Math.cos(Math.toRadians(endLat))
+                * Math.sin(lngDistance / 2) * Math.sin(lngDistance / 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+
+        return 6371 * c * 0.539956803;
     }
 }

@@ -183,7 +183,7 @@ public class Simulation
 
             outputPanel.setTextAreaOne(result.toString());
 
-            final double COST_OF_FUEL = 0.95;
+            final double COST_OF_FUEL = 0.51;
             String summary = String.format("\nTotal distance:\t\t%8.2f nautical miles with an extra %.2f nautical " +
                                                    "miles for wave compensation\n" +
                                                    "Total duration:\t\t%8.2f hours\n" +
