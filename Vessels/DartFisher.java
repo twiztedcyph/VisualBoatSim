@@ -29,45 +29,65 @@ public class DartFisher extends Vessel
     @Override
     public double getRPM(double speed)
     {
-        return ((13/0.2778) * speed + (13 * 6 * Math.pow(10, (-13)) / 0.2778) + 800);
+        if (speed < 6.1)
+        {
+            return 42.29 * speed + 650;
+        }else if (speed <= 10.8)
+        {
+            return 62.97 * speed + 523.8;
+        }else if (speed < 13.5)
+        {
+            return 71.48 * speed + 432;
+        }else if (speed < 15.1)
+        {
+            return 128.1 * speed - 332.6;
+        }else if (speed < 19.3)
+        {
+            return 45.95 * speed + 908.1;
+        }else if (speed < 23.9)
+        {
+            return 38.47 * speed + 1052;
+        }else
+        {
+            return 19.03 * speed + 1517;
+        }
     }
 
     /**
      * Get this vessel's fuel usage per hour from its RPM.
      *
-     * @param RPM The vessel's RPM;
+     * @param rpm The vessel's RPM;
      * @return The vessel's fuel usage per hour.
      */
     @Override
-    public double getFPH(double RPM)
+    public double getFPH(double rpm)
     {
-        if (RPM < 1000)
+        if (rpm <= 825)
         {
-            return (0.146 * RPM - 80.69);
+            return 5;
         }
-        else if (RPM < 1100)
+        else if (rpm <= 1204)
         {
-            return (0.302 * RPM - 235.4);
+            return 0.128 * rpm - 105.2;
         }
-        else if (RPM < 1300)
+        else if (rpm < 1397)
         {
-            return (0.215 * RPM - 139.1);
+            return 0.268 * rpm - 273.4;
         }
-        else if (RPM < 1400)
+        else if (rpm <= 1602)
         {
-            return (0.056 * RPM + 67.16);
+            return 0.567 * rpm - 691.0;
         }
-        else if (RPM < 1800)
+        else if (rpm < 1795)
         {
-            return (0.121 * RPM - 26.3);
+            return 0.643 * rpm - 813.1;
         }
-        else if (RPM < 1900)
+        else if (rpm <= 1972)
         {
-            return (0.203 * RPM - 172.4);
-        }
-        else
+            return 0.333 * rpm - 256.3;
+        }else
         {
-            return (((-0.0000513) * RPM * RPM) + (0.221 * RPM) - 27.2);
+            return 1.444 * rpm - 2447;
         }
     }
 }

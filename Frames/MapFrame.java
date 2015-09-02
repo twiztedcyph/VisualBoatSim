@@ -56,7 +56,6 @@ public class MapFrame extends JFrame
     private final String FSP = System.getProperty("file.separator");
     private Journey journey;
     private WeatherInputPanel ip;
-    private Simulation simulation;
     private ArrayList<Vessel> vesselList;
     private JSON json;
 
@@ -106,7 +105,6 @@ public class MapFrame extends JFrame
             {
                 journey = null;
                 json = null;
-                simulation = null;
                 map.dispose();
                 System.exit(0);
             }
@@ -306,7 +304,7 @@ public class MapFrame extends JFrame
         // Laptop:  C:\Users\Cypher\Dropbox\Java Projects\VisualBoatSim
         // Desktop: G:\Dropbox\Java Projects\VisualBoatSim
         WorkspaceInfo workspaceInfo = WorkspaceInfo.CreateShapefileFolderConnection(
-                "WORKSPACE", "C:\\Users\\Cypher\\Dropbox\\Java Projects\\VisualBoatSim");
+                "WORKSPACE", "G:\\Dropbox\\Java Projects\\VisualBoatSim");
 
         // set dynamic workspaces for our local map service
         workspaceInfoSet.add(workspaceInfo);
