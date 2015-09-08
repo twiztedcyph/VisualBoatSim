@@ -231,7 +231,7 @@ public class MapFrame extends JFrame
                     Current lastWeather = json.fetchCurrent(lastPoint.getY(), lastPoint.getX());
 
 
-                    for (int i = 1; i < polyline.getPointCount() - 1; i++)
+                    for (int i = 1; i < polyline.getPointCount() - 1; i+=10)
                     {
                         BufferedImage weatherIcon = null;
                         try
@@ -244,7 +244,7 @@ public class MapFrame extends JFrame
                         System.out.println("Point: " + i);
 
                         Point c = (Point) GeometryEngine.project(polyline.getPoint(i), map.getSpatialReference(), mySpat);
-                        if (getDist(lastPoint.getY(), lastPoint.getX(), c.getY(), c.getX()) > 4)
+                        if (getDist(lastPoint.getY(), lastPoint.getX(), c.getY(), c.getX()) > 5)
                         {
                             lastWeather = json.fetchCurrent(c.getY(), c.getX());
                             lastPoint = c;

@@ -1,6 +1,8 @@
 package com.twizted;
 
 import com.twizted.Frames.MapFrame;
+import com.twizted.Frames.OutputFrame;
+import com.twizted.Frames.SummaryPanel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -55,5 +57,11 @@ public class Main
                 }
             }
         });
+
+//        SummaryPanel sp = new SummaryPanel();
+//        OutputFrame outputFrame = new OutputFrame();
+//        outputFrame.addTabPanel("Summary", sp);
+//        outputFrame.pack();
+//        outputFrame.setVisible(true);
     }
 }
