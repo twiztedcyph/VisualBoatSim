@@ -304,7 +304,7 @@ public class MapFrame extends JFrame
         // Laptop:  C:\Users\Cypher\Dropbox\Java Projects\VisualBoatSim
         // Desktop: G:\Dropbox\Java Projects\VisualBoatSim
         WorkspaceInfo workspaceInfo = WorkspaceInfo.CreateShapefileFolderConnection(
-                "WORKSPACE", "G:\\Dropbox\\Java Projects\\VisualBoatSim");
+                "WORKSPACE", "C:\\Users\\Cypher\\Dropbox\\Java Projects\\VisualBoatSim");
 
         // set dynamic workspaces for our local map service
         workspaceInfoSet.add(workspaceInfo);
