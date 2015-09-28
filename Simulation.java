@@ -2,6 +2,7 @@ package com.twizted;
 
 import com.twizted.Frames.OutputFrame;
 import com.twizted.Frames.OutputPanel;
+import com.twizted.Frames.SummaryPanel;
 import com.twizted.Vessels.Vessel;
 
 import java.util.ArrayList;
@@ -42,6 +43,8 @@ public class Simulation
     {
         final double AVERAGE_RADIUS_OF_EARTH = 6371;
         OutputFrame outputFrame = new OutputFrame();
+        SummaryPanel sp = new SummaryPanel();
+        outputFrame.addTabPanel("Summary", sp);
         for (Vessel vessel : vesselList)
         {
             boolean safeWaveExceeded = false;
@@ -183,7 +186,7 @@ public class Simulation
 
             outputPanel.setTextAreaOne(result.toString());
 
-            final double COST_OF_FUEL = 0.95;
+            final double COST_OF_FUEL = 0.56;
             String summary = String.format("\nTotal distance:\t\t%8.2f nautical miles with an extra %.2f nautical " +
                                                    "miles for wave compensation\n" +
                                                    "Total duration:\t\t%8.2f hours\n" +
